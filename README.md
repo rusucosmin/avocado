@@ -1,4 +1,5 @@
-# Backend
+# ParkParkGo
+- Aplicatie de gestionarea locurilor de parcare.
 
 ## Useful links
 - [Google Drive Folder](https://drive.google.com/drive/folders/0BzIj9OP0nFsiWFZRLTBWRXBIaHM)
