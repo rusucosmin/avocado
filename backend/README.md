@@ -1,24 +1,14 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Backend
 
-Things you may want to cover:
+- rails version: 5.1.4
+- ruby version: 2.4.2
 
-* Ruby version
+## Ruby on Rails
+- [Quick overview of Ruby Syntax](https://www.sololearn.com/Course/Ruby/)
+- [Learning Ruby](http://index-of.es/Programming/Ruby/O'Reilly%20Learning%20Ruby.pdf)
+- [Ruby on Rails docs](http://guides.rubyonrails.org/)
+- [Ruby on Rails book](https://www.railstutorial.org/book) - create a simple Twitter clone in Rails
 
-* System dependencies
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
