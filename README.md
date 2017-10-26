@@ -1,5 +1,5 @@
 # ParkParkGo
-- Aplicatie de gestionarea locurilor de parcare.
+- App for managing parking spots.
 
 ## Useful links
 - [Google Drive Folder](https://drive.google.com/drive/folders/0BzIj9OP0nFsiWFZRLTBWRXBIaHM)
