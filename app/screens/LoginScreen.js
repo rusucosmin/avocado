@@ -19,7 +19,6 @@ export class LoginScreen extends Component {
     login() {
         const {navigate} = this.props.navigation;
         let verified = true;
-
         console.log("LOG");
         // Here make request to server to verify if user exists
         fetch("https://damp-refuge-96622.herokuapp.com/login", {
@@ -96,7 +95,6 @@ export class LoginScreen extends Component {
                     <TouchableHighlight
                         style={styles.buttonSignIn}
                         onPress={() => {
-                            console.log("X");
                             this.login()
                         }}
                     >
