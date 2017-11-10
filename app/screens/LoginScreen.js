@@ -16,9 +16,26 @@ export class LoginScreen extends Component {
         this.state = {email: '', password: ''};
     }
 
+    login() {
+        const {navigate} = this.props.navigation;
+        let verified = true;
+
+        // Here make request to server to verify if user exists
+        // .....
+
+        if(verified) {
+            navigate('Home', {email: this.state.email, password: this.state.password});
+        }
+    }
+
+    goToSignUp() {
+        const {navigate} = this.props.navigation;
+        navigate('SignUp', {email: this.state.email, password: this.state.password});
+    }
+
 
     render() {
-        const {navigate} = this.props.navigation;
+
         return (
             <View style={styles.mainView}>
                 <View style={styles.titleBox}>
@@ -57,7 +74,7 @@ export class LoginScreen extends Component {
                     <TouchableHighlight
                         style={styles.buttonSignIn}
                         onPress={() => {
-                            navigate('Home', {email: this.state.email, password: this.state.password});
+                            this.login()
                         }}
                     >
                         <Text style={{color: '#fff', fontSize: 18}}>
@@ -68,7 +85,7 @@ export class LoginScreen extends Component {
                         <Text> Don't have an account? </Text>
                         <Text style={{fontWeight: 'bold'}}
                               onPress={() => {
-                                  navigate('SignUp', {email: this.state.email, password: this.state.password});
+                                  this.goToSignUp();
                               }}
                         > SIGN UP </Text>
                     </Text>
@@ -171,4 +188,4 @@ const sty = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
     },
-})
+});

@@ -17,8 +17,18 @@ export class SignUpScreen extends Component {
         console.log("state: ", this.state);
     }
 
-    render() {
+    signUp() {
         const {navigate} = this.props.navigation;
+        let successful = true;
+        // Here make request to server to register user
+        // .....
+        if (successful) {
+            navigate('Login', {});
+        }
+
+    }
+
+    render() {
         return (
             <View style={styles.mainView}>
                 <View style={styles.titleBox}>
@@ -53,6 +63,9 @@ export class SignUpScreen extends Component {
                     />
                     <TouchableHighlight
                         style={styles.buttonSignIn}
+                        onPress={() => {
+                            this.signUp()
+                        }}
                     >
                         <Text style={{color: '#fff', fontSize: 18}}>
                             Sign up
