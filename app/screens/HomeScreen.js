@@ -5,15 +5,26 @@ import { View, Button, FlatList, Text, StyleSheet }
 
 export class HomeScreen extends Component {
   static navigationOptions = ({navigation}) => ({
-    title: 'Your shared buylist',
-  })
+    title: 'Home'
+  });
+
+  constructor(props) {
+      super(props);
+  }
+
+  componentDidMount() {
+      console.log("Home state: ", this.state);
+      console.log("Home props: ", this.props);
+  }
+
+
   render() {
-    const { navigate, goBack } = this.props.navigation
-    const username = this.props.navigation.state.username
-    const password = this.props.navigation.state.password
+    const { navigate, goBack } = this.props.navigation;
+    const email = this.props.navigation.state.params.email;
+    const password = this.props.navigation.state.params.password;
     return (
       <View style={styles.container}>
-        <Text style={styles.h1}>Welcome back!</Text>
+        <Text style={styles.h1}>Welcome back, {email}!</Text>
       </View>
     )
   }

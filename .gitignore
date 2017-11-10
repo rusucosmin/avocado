@@ -24,15 +24,14 @@ project.xcworkspace
 
 # Android/IntelliJ
 #
-build/
-.idea
+.idea/
 .gradle
 local.properties
 *.iml
 
 # node.js
 #
-node_modules/
+**/node_modules/
 npm-debug.log
 yarn-error.log
 
