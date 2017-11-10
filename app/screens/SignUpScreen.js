@@ -21,6 +21,22 @@ export class SignUpScreen extends Component {
         const {navigate} = this.props.navigation;
         let successful = true;
         // Here make request to server to register user
+        console.log("Signing up...");
+        fetch("https://damp-refuge-96622.herokuapp.com/user", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user: {
+                    email: this.state.email,
+                    password: this.state.password,
+                },
+            })
+        })
+            .then((response) => console.log(response))
+            .done();
         // .....
         if (successful) {
             navigate('Login', {});

@@ -20,10 +20,32 @@ export class LoginScreen extends Component {
         const {navigate} = this.props.navigation;
         let verified = true;
 
+        console.log("LOG");
         // Here make request to server to verify if user exists
+        fetch("https://damp-refuge-96622.herokuapp.com/login", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                auth: {
+                    email: this.state.email,
+                    password: this.state.password,
+                }
+            })
+        })
+            .then((response) =>
+                response.json()
+            )
+            .then((responseData) => {
+                console.log(responseData.jwt)
+                //TODO: do something with jwt. maybe store it.
+            })
+            .done();
         // .....
 
-        if(verified) {
+        if (verified) {
             navigate('Home', {email: this.state.email, password: this.state.password});
         }
     }
@@ -74,6 +96,7 @@ export class LoginScreen extends Component {
                     <TouchableHighlight
                         style={styles.buttonSignIn}
                         onPress={() => {
+                            console.log("X");
                             this.login()
                         }}
                     >
