@@ -1,48 +1,59 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
+import {Alert, StyleSheet, View, Text, Image, TextInput, TouchableHighlight} from 'react-native'
+import {Actions} from 'react-native-router-flux'
+import {connect} from 'react-redux'
+import {signUp as signUpAction} from '../actions/users';
 
-import {
-    View, Button, TextInput, Text, StyleSheet, Alert, Image, TouchableHighlight
-}
-    from 'react-native'
-
-export class SignUpScreen extends Component {
-    static navigationOptions = ({navigation}) => ({
-        header: null
-    });
-
+class SignUpScreen extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
         this.state = {email: '', password: ''};
-        console.log("state: ", this.state);
     }
 
     signUp() {
-        const {navigate} = this.props.navigation;
-        let successful = true;
         // Here make request to server to register user
         console.log("Signing up...");
-        fetch("https://damp-refuge-96622.herokuapp.com/user", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                user: {
-                    email: this.state.email,
-                    password: this.state.password,
-                },
-            })
-        })
-            .then((response) => console.log(response))
-            .done();
-        // .....
-        if (successful) {
-            navigate('Login', {});
+
+        const isEmail = this.verifyEmail(this.state.email);
+        const isPassword = this.verifyPassword(this.state.password);
+
+        if (!isEmail) {
+            Alert.alert("The email is not valid.");
+            return;
+        }
+        if (!isPassword) {
+            Alert.alert("The password should be longer than 8 characters");
+            return;
         }
 
+        this.props.signUp(this.state.email, this.state.password)
+            .then((response) => {
+                if(response === true) {
+                    Alert.alert("User successfully created.");
+                    Actions.loginView();
+                }
+                else {
+                    Alert.alert("User could not be created.");
+                }
+            });
     }
+
+    verifyEmail(email) {
+        var pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        console.log("Mail verif: " + email.match(pattern));
+        if (email.match(pattern) === null) {
+            return false;
+        }
+        return true;
+    }
+
+    verifyPassword(password) {
+        if (password.length < 8) {
+            return false;
+        }
+        return true;
+    }
+
 
     render() {
         return (
@@ -153,38 +164,25 @@ const styles = StyleSheet.create({
     }
 
 });
-const sty = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        marginBottom: 100,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    row: {
-        flexDirection: 'row',
-    },
-    textlabel: {
-        fontSize: 20,
-        flex: 1,
-    },
-    textinput: {
-        flex: 2,
-        fontSize: 20,
-    },
-    h1: {
-        fontSize: 40,
-        textAlign: 'center',
-        margin: 10,
-    },
-    h2: {
-        fontSize: 30,
-        textAlign: 'center',
-        margin: 10,
-    },
-    item: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-})
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUp: (email, password) => {
+            return dispatch(signUpAction(email, password))
+        }
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SignUpScreen);
+
+
+

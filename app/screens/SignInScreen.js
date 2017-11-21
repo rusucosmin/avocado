@@ -1,62 +1,33 @@
 import React, {Component} from 'react';
+import {Actions} from 'react-native-router-flux';
+import {Text, View, TouchableHighlight, StyleSheet, Image, TextInput} from 'react-native';
+import {connect} from 'react-redux';
+import {signIn as signInAction} from '../actions/users';
 
-import {
-    View, Button, TextInput, Text, StyleSheet, Alert, Image, TouchableHighlight
-}
-    from 'react-native'
-
-export class LoginScreen extends Component {
-    static navigationOptions = ({navigation}) => ({
-        title: 'ParkParkGo',
-        header: null
-    });
-
+class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {email: '', password: ''};
     }
 
-    login() {
-        const {navigate} = this.props.navigation;
-        let verified = true;
-        console.log("LOG");
+    signIn() {
         // Here make request to server to verify if user exists
-        fetch("https://damp-refuge-96622.herokuapp.com/login", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                auth: {
-                    email: this.state.email,
-                    password: this.state.password,
+        this.props.signIn(this.state.email, this.state.password)
+            .then(() => {
+                const token = this.props.user.token;
+                if (token !== null && token !== undefined) {
+                    Actions.homeView({user: this.props.user});
+                } else {
+                    Alert("No user with this data.");
                 }
             })
-        })
-            .then((response) =>
-                response.json()
-            )
-            .then((responseData) => {
-                console.log(responseData.jwt)
-                //TODO: do something with jwt. maybe store it.
-            })
-            .done();
-        // .....
-
-        if (verified) {
-            navigate('Home', {email: this.state.email, password: this.state.password});
-        }
     }
 
     goToSignUp() {
-        const {navigate} = this.props.navigation;
-        navigate('SignUp', {email: this.state.email, password: this.state.password});
+        Actions.signUpView({email: this.state.email, password: this.state.password});
     }
 
-
     render() {
-
         return (
             <View style={styles.mainView}>
                 <View style={styles.titleBox}>
@@ -95,7 +66,7 @@ export class LoginScreen extends Component {
                     <TouchableHighlight
                         style={styles.buttonSignIn}
                         onPress={() => {
-                            this.login()
+                            this.signIn()
                         }}
                     >
                         <Text style={{color: '#fff', fontSize: 18}}>
@@ -173,40 +144,26 @@ const styles = StyleSheet.create({
     signUpText: {
         fontSize: 14,
     }
+});
 
-});
-const sty = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        marginBottom: 100,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    row: {
-        flexDirection: 'row',
-    },
-    textlabel: {
-        fontSize: 20,
-        flex: 1,
-    },
-    textinput: {
-        flex: 2,
-        fontSize: 20,
-    },
-    h1: {
-        fontSize: 40,
-        textAlign: 'center',
-        margin: 10,
-    },
-    h2: {
-        fontSize: 30,
-        textAlign: 'center',
-        margin: 10,
-    },
-    item: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-});
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signIn: (email, password) => {
+            return dispatch(signInAction(email, password))
+        }
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(LoginScreen);
+
+
