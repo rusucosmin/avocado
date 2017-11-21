@@ -39,7 +39,6 @@ export const saveUserToken = (token) => {
 
 export const signIn = (email, password) => {
     return (dispatch) => {
-        const password = "this_is_strong";
         dispatch(signInStarted(email));
 
         return fetch("https://damp-refuge-96622.herokuapp.com/login", {
@@ -60,7 +59,7 @@ export const signIn = (email, password) => {
                 if (response.status == 201) {
                     dispatch(signInSuccess());
                     console.log("User connected");
-                    return response.json()
+                    return response.json(gi)
 
                 } else {
                     dispatch(signInFail());
