@@ -39,7 +39,6 @@ export const saveUserToken = (token) => {
 
 export const signIn = (email, password) => {
     return (dispatch) => {
-        const email = "alexboss@gmail.com";
         const password = "this_is_strong";
         dispatch(signInStarted(email));
 
@@ -57,6 +56,7 @@ export const signIn = (email, password) => {
             })
         })
             .then((response) => {
+                console.log("Sign in response: ", response);
                 if (response.status == 201) {
                     dispatch(signInSuccess());
                     console.log("User connected");
@@ -64,8 +64,6 @@ export const signIn = (email, password) => {
 
                 } else {
                     dispatch(signInFail());
-                    Alert.alert("No user with this data.");
-                    throw Error("No user with this data.");
                 }
             })
             .then((responseData) => {

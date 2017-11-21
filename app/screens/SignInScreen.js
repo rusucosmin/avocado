@@ -17,6 +17,8 @@ class LoginScreen extends Component {
                 const token = this.props.user.token;
                 if (token !== null && token !== undefined) {
                     Actions.homeView({user: this.props.user});
+                } else {
+                    Alert("No user with this data.");
                 }
             })
     }
