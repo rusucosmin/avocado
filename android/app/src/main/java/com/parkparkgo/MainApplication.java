@@ -1,4 +1,4 @@
-package com.mobile;
+package com.parkparkgo;
 
 import android.app.Application;
 

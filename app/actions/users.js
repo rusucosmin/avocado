@@ -59,8 +59,7 @@ export const signIn = (email, password) => {
                 if (response.status == 201) {
                     dispatch(signInSuccess());
                     console.log("User connected");
-                    return response.json(gi)
-
+                    return response.json()
                 } else {
                     dispatch(signInFail());
                 }

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {View, Button, FlatList, Text, StyleSheet} from 'react-native'
+import {Actions} from 'react-native-router-flux';
+import {View, Button, FlatList, Text, StyleSheet, TouchableHighlight, AsyncStorage} from 'react-native'
 import {connect} from 'redux';
 
 export default class HomeScreen extends Component {
@@ -12,12 +13,27 @@ export default class HomeScreen extends Component {
         console.log("Home props: ", this.props);
     }
 
+    signOut() {
+        AsyncStorage.removeItem("email");
+        AsyncStorage.removeItem("token");
+        Actions.signInView();
+    }
 
     render() {
         const email = this.props.user.email;
         return (
             <View style={styles.container}>
                 <Text style={styles.h1}> Welcome, {email}! </Text>
+                <TouchableHighlight
+                        style={styles.buttonSignOut}
+                        onPress={() => {
+                            this.signOut()
+                        }}
+                    >
+                        <Text style={{color: '#fff', fontSize: 18}}>
+                            Sign out
+                        </Text>
+                    </TouchableHighlight>
             </View>
         )
     }
@@ -54,5 +70,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
+    },
+    buttonSignOut: {
+        width: '78%',
+        backgroundColor: '#4D9DE0',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        paddingTop: 14,
+        paddingBottom: 14,
     },
 });

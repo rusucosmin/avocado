@@ -30,7 +30,7 @@ class SignUpScreen extends Component {
             .then((response) => {
                 if(response === true) {
                     Alert.alert("User successfully created.");
-                    Actions.loginView();
+                    Actions.signInView();
                 }
                 else {
                     Alert.alert("User could not be created.");

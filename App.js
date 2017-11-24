@@ -19,7 +19,7 @@ export default class App extends Component {
                 <Router>
                     <Scene key="root">
                         <Scene
-                            key="loginView"
+                            key="signInView"
                             component={LoginScreen}
                             hideNavBar={true}
                         />

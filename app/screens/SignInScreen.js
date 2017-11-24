@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {Text, View, TouchableHighlight, StyleSheet, Image, TextInput} from 'react-native';
+import {Text, View, TouchableHighlight, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
 import {connect} from 'react-redux';
 import {signIn as signInAction} from '../actions/users';
 
@@ -9,6 +9,33 @@ class LoginScreen extends Component {
         super(props);
         this.state = {email: '', password: ''};
     }
+    componentDidMount() {
+        this.isSignedIn();
+    }
+
+    isSignedIn() {
+        let email, token;
+        AsyncStorage.getItem("email")
+            .then((response) => {
+                email = response;
+                console.log("Local email: ", email);
+                return AsyncStorage.getItem("token");
+            })
+            .then((response) => {
+                token = response;
+                console.log("Local token: ", token);
+
+                if(email !== null && email !== undefined && token !== null && token !== undefined) {
+                    console.log("Local signing");
+                    const user = {
+                        email: email,
+                        token: token,
+                        fetching: false
+                    }
+                    Actions.homeView({user: user});
+                }
+            })
+    }
 
     signIn() {
         // Here make request to server to verify if user exists
@@ -16,9 +43,11 @@ class LoginScreen extends Component {
             .then(() => {
                 const token = this.props.user.token;
                 if (token !== null && token !== undefined) {
+                    AsyncStorage.setItem("email", this.props.user.email);
+                    AsyncStorage.setItem("token", token);
                     Actions.homeView({user: this.props.user});
                 } else {
-                    Alert("No user with this data.");
+                    Alert.alert("No user with this data.");
                 }
             })
     }
