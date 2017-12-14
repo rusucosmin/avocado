@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Alert, StyleSheet, View, Text, Image, TextInput, TouchableHighlight} from 'react-native'
+import {Alert, StyleSheet, View, Text, Image, TextInput, TouchableOpacity} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {signUp as signUpAction} from '../actions/users';
@@ -88,7 +88,7 @@ class SignUpScreen extends Component {
                         secureTextEntry={true}
                         style={styles.inputPassword}
                     />
-                    <TouchableHighlight
+                    <TouchableOpacity
                         style={styles.buttonSignIn}
                         onPress={() => {
                             this.signUp()
@@ -97,7 +97,7 @@ class SignUpScreen extends Component {
                         <Text style={{color: '#fff', fontSize: 18}}>
                             Sign up
                         </Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
             </View>
         )

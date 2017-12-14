@@ -5,7 +5,8 @@
  */
 import React, {Component} from 'react'
 import {Provider} from 'react-redux'
-import {Router, Scene} from "react-native-router-flux"
+import {Router, Scene, Actions, ActionConst} from "react-native-router-flux"
+import {BackHandler} from 'react-native';
 
 import HomeScreen from './app/screens/HomeScreen'
 import LoginScreen from './app/screens/SignInScreen'
@@ -16,8 +17,20 @@ import {ListView} from 'react-native'
 
 
 global.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+import AddParkSpotScreen from "./app/screens/AddParkSpotScreen"
+import FormModalScreen from "./app/screens/FormModalScreen"
+import MapScreen from './app/screens/MapScreen';
+import FindParkSpotScreen from './app/screens/FindParkSpotScreen';
 
 export default class App extends Component {
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', () => true);
+    };
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', () => true);
+    }
+
     render() {
         return (
             <Provider store={store}>
@@ -27,6 +40,7 @@ export default class App extends Component {
                             key="signInView"
                             component={LoginScreen}
                             hideNavBar={true}
+                            type={ActionConst.RESET}
                         />
                         <Scene
                             key="signUpView"
@@ -41,6 +55,25 @@ export default class App extends Component {
                         <Scene
                             key="parkSpotsView"
                             component={ParkSpotView}
+                        />
+                        <Scene
+                            key="addParkSpotView"
+                            title="Add Park Spot"
+                            component={AddParkSpotScreen}
+                        />
+                        <Scene
+                            key="formModalView"
+                            component={FormModalScreen}
+                        />
+                        <Scene
+                            key="mapView"
+                            hideNavBar
+                            component={MapScreen}
+                        />
+                        <Scene
+                            key="findParkSpotView"
+                            hideNavBar
+                            component={FindParkSpotScreen}
                         />
                     </Scene>
                 </Router>

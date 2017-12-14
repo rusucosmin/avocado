@@ -65,6 +65,7 @@ export const signIn = (email, password) => {
                 }
             })
             .then((responseData) => {
+                console.log("Data: ", responseData);
                 console.log("Token: ", responseData.jwt);
                 dispatch(saveUserToken(responseData.jwt));
             })

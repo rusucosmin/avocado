@@ -1,16 +1,25 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {Alert, View, Button, FlatList, Text, StyleSheet, TouchableHighlight, AsyncStorage} from 'react-native'
 import {connect} from 'redux';
+import { View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native'
+
 
 export default class HomeScreen extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            username: this.extractUserFromEmail(this.props.user.email)
+        }
     }
 
     componentDidMount() {
         console.log("Home state: ", this.state);
         console.log("Home props: ", this.props);
+    }
+
+    extractUserFromEmail(email) {
+        return email.split("@")[0];
     }
 
     signOut() {
@@ -24,11 +33,22 @@ export default class HomeScreen extends Component {
     }
 
     render() {
-        const email = this.props.user.email;
         return (
+
             <View style={styles.container}>
-                <Text style={styles.h1}> Welcome, {email}! </Text>
-                <TouchableHighlight
+                <Text style={styles.h1}> Welcome, {this.state.username}! </Text>
+
+                <TouchableOpacity
+                    style={styles.buttonSignOut}
+                    onPress={() => {
+                        Actions.findParkSpotView();
+                    }}
+                >
+                    <Text style={{ color: '#fff', fontSize: 18 }}>
+                        Find Park Spot
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                     style={styles.buttonSignOut}
                     onPress={() => {
                         this.seePersonalParkSpots()
@@ -37,17 +57,27 @@ export default class HomeScreen extends Component {
                     <Text style={{color: '#fff', fontSize: 18}}>
                         Check out your park spots
                     </Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                        style={styles.buttonSignOut}
-                        onPress={() => {
-                            this.signOut()
-                        }}
-                    >
-                        <Text style={{color: '#fff', fontSize: 18}}>
-                            Sign out
-                        </Text>
-                    </TouchableHighlight>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.buttonSignOut}
+                    onPress={() => {
+                        Actions.addParkSpotView();
+                    }}
+                >
+                    <Text style={{ color: '#fff', fontSize: 18 }}>
+                        Add Park Spot
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.buttonSignOut}
+                    onPress={() => {
+                        this.signOut()
+                    }}
+                >
+                    <Text style={{ color: '#fff', fontSize: 18 }}>
+                        Sign out
+                    </Text>
+                </TouchableOpacity>
             </View>
         )
     }

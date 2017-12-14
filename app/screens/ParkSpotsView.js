@@ -69,6 +69,7 @@ class ParkSpotsView extends Component {
                 <ListView
                     dataSource={this.state.parkSpotDS}
                     renderRow={this.renderRow.bind(this)}
+                    enableEmptySections={true}
                 />
             </View>
         );

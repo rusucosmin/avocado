@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {Text, View, TouchableHighlight, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
 import {connect} from 'react-redux';
 import {signIn as signInAction} from '../actions/users';
 
@@ -14,6 +14,7 @@ class LoginScreen extends Component {
     }
 
     isSignedIn() {
+        // TODO: save to store the credentials from async storage when you sign in
         let email, token;
         AsyncStorage.getItem("email")
             .then((response) => {
@@ -31,8 +32,8 @@ class LoginScreen extends Component {
                         email: email,
                         token: token,
                         fetching: false
-                    }
-                    Actions.homeView({user: user});
+                    };
+                    Actions.reset("homeView", {user: user});
                 }
             })
     }
@@ -45,9 +46,9 @@ class LoginScreen extends Component {
                 if (token !== null && token !== undefined) {
                     AsyncStorage.setItem("email", this.props.user.email);
                     AsyncStorage.setItem("token", token);
-                    Actions.homeView({user: this.props.user});
+                    Actions.reset("homeView", {user: this.props.user});
                 } else {
-                    Alert.alert("No user with this data.");
+                    Alert.alert("Ooops", "No user with this data.");
                 }
             })
     }
@@ -92,7 +93,7 @@ class LoginScreen extends Component {
                         secureTextEntry={true}
                         style={styles.inputPassword}
                     />
-                    <TouchableHighlight
+                    <TouchableOpacity
                         style={styles.buttonSignIn}
                         onPress={() => {
                             this.signIn()
@@ -101,7 +102,7 @@ class LoginScreen extends Component {
                         <Text style={{color: '#fff', fontSize: 18}}>
                             Sign in
                         </Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                     <Text style={{marginTop: 12, fontSize: 14, color: "#b6b6b4"}}>
                         <Text> Don't have an account? </Text>
                         <Text style={{fontWeight: 'bold'}}
