@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {View, Button, FlatList, Text, StyleSheet, TouchableHighlight, AsyncStorage} from 'react-native'
+import {Alert, View, Button, FlatList, Text, StyleSheet, TouchableHighlight, AsyncStorage} from 'react-native'
 import {connect} from 'redux';
 
 export default class HomeScreen extends Component {
@@ -19,11 +19,25 @@ export default class HomeScreen extends Component {
         Actions.signInView();
     }
 
+    seePersonalParkSpots() {
+        Actions.parkSpotsView();
+    }
+
     render() {
         const email = this.props.user.email;
         return (
             <View style={styles.container}>
                 <Text style={styles.h1}> Welcome, {email}! </Text>
+                <TouchableHighlight
+                    style={styles.buttonSignOut}
+                    onPress={() => {
+                        this.seePersonalParkSpots()
+                    }}
+                >
+                    <Text style={{color: '#fff', fontSize: 18}}>
+                        Check out your park spots
+                    </Text>
+                </TouchableHighlight>
                 <TouchableHighlight
                         style={styles.buttonSignOut}
                         onPress={() => {

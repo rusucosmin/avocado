@@ -10,7 +10,12 @@ import {Router, Scene} from "react-native-router-flux"
 import HomeScreen from './app/screens/HomeScreen'
 import LoginScreen from './app/screens/SignInScreen'
 import SignUpScreen from "./app/screens/SignUpScreen"
+import ParkSpotView from "./app/screens/ParkSpotsView"
 import { store } from './app/store'
+import {ListView} from 'react-native'
+
+
+global.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 export default class App extends Component {
     render() {
@@ -32,6 +37,10 @@ export default class App extends Component {
                             key="homeView"
                             component={HomeScreen}
                             hideNavBar={true}
+                        />
+                        <Scene
+                            key="parkSpotsView"
+                            component={ParkSpotView}
                         />
                     </Scene>
                 </Router>
