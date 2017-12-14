@@ -49,7 +49,7 @@ class ParkSpotsView extends Component {
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => console.log("ASOINGI")}>
+                <TouchableOpacity onPress={() => Actions.parkSpotDetailedView({park_spot: record})}>
                     <View style={{flexDirection: 'row', padding: 10}}>
                         <View stle={{flex: 1}}>
                             <Text>{record.name}</Text>
