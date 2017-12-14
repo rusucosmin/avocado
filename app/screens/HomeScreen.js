@@ -36,48 +36,56 @@ export default class HomeScreen extends Component {
         return (
 
             <View style={styles.container}>
-                <Text style={styles.h1}> Welcome, {this.state.username}! </Text>
+                <View style={styles.upperScreen}>
+                    <TouchableOpacity
+                        style={styles.buttonSignOut}
+                        onPress={() => {
+                            Actions.findParkSpotView();
+                        }}
+                    >
+                        <Text style={{ color: '#fff', fontSize: 18 }}>
+                            Find Park Spot
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.lowerScreen}>
+                    <View style={[styles.halfScreenWidth, {backgroundColor: 'blue'}]}>
+                        <TouchableOpacity
+                            style={styles.buttonSignOut}
+                            onPress={() => {
+                                this.seePersonalParkSpots()
+                            }}
+                        >
+                            <Text style={{color: '#fff', fontSize: 18}}>
+                                Check out your park spots
+                            </Text>
+                        </TouchableOpacity>
+                        <Text style={{textColor: 'red'}}>Here I am</Text>
+                    </View>
+                    <View style={[styles.halfScreenWidth, {backgroundColor: 'red'}]}>
+                        <TouchableOpacity
+                            style={styles.buttonSignOut}
+                            onPress={() => {
+                                Actions.addParkSpotView();
+                            }}
+                        >
+                            <Text style={{ color: '#fff', fontSize: 18 }}>
+                                Add Park Spot
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonSignOut}
+                            onPress={() => {
+                                this.signOut()
+                            }}
+                        >
+                            <Text style={{ color: '#fff', fontSize: 18 }}>
+                                Sign out
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        Actions.findParkSpotView();
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        Find Park Spot
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        this.seePersonalParkSpots()
-                    }}
-                >
-                    <Text style={{color: '#fff', fontSize: 18}}>
-                        Check out your park spots
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        Actions.addParkSpotView();
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        Add Park Spot
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        this.signOut()
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        Sign out
-                    </Text>
-                </TouchableOpacity>
+                </View>
             </View>
         )
     }
@@ -89,29 +97,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    row: {
+    upperScreen: {
+        flex: .7,
+    },
+    lowerScreen : {
+        flex: .3,
         flexDirection: 'row',
     },
-    textlabel: {
-        fontSize: 20,
-        flex: 1,
-    },
-    textinput: {
-        flex: 2,
-        fontSize: 20,
+    halfScreenWidth: {
+        flex: .5
     },
     h1: {
         fontSize: 40,
-        textAlign: 'center',
-        margin: 10,
-    },
-    h2: {
-        fontSize: 30,
-        textAlign: 'center',
-        margin: 10,
-    },
-    item: {
-        fontSize: 20,
         textAlign: 'center',
         margin: 10,
     },
