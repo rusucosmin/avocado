@@ -1,27 +1,19 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {StyleSheet, AsyncStorage, Alert, View, TouchableOpacity, Text} from 'react-native'
+import {StyleSheet, AsyncStorage, Alert, TouchableOpacity, Text, View} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
 
-class AddParkSpotScreen extends Component {
+export default class ParkSpotDetailedViewScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            parkspot: {
-                name: "",
-                address: "",
-                latitude: 0,
-                longitude: 0,
-                price: 0,
-                size: 0,
-                description: ""
-            },
-            locationTitle: "Location             your current location"
+            park_spot: this.props.park_spot,
+            locationTitle: "Selected location",
         };
 
-        this.props.latitude = -1;
-        this.props.longitude = -1;
+        this.props.latitude = this.state.park_spot.latitude;
+        this.props.longitude = this.state.park_spot.longitude;
 
     }
 
@@ -35,8 +27,8 @@ class AddParkSpotScreen extends Component {
 
     updateLocationTitle() {
         //Update the text of the field with location such that will display the selected coordinates
-        const latitude = this.state.parkspot.latitude;
-        const longitude = this.state.parkspot.longitude;
+        const latitude = this.state.park_spot.latitude;
+        const longitude = this.state.park_spot.longitude;
         const newLocationTitle = "Location             " + latitude + ", " + longitude;
         if (this.state.locationTitle !== newLocationTitle) {
             if (latitude !== undefined && latitude !== null && latitude !== 0 ||
@@ -50,8 +42,8 @@ class AddParkSpotScreen extends Component {
 
     setCoordinates(lat, long) {
         this.setState({
-            parkspot: {
-                ...this.state.parkspot,
+            park_spot: {
+                ...this.state.park_spot,
                 latitude: lat,
                 longitude: long
             }
@@ -61,8 +53,8 @@ class AddParkSpotScreen extends Component {
     goToMap() {
         //Go to map view
         //Pass the latitude and longitude so the map will be focused already if there were previously selected coordinates
-        const latitude = this.state.parkspot.latitude;
-        const longitude = this.state.parkspot.longitude;
+        const latitude = this.state.park_spot.latitude;
+        const longitude = this.state.park_spot.longitude;
 
         Actions.mapView({
             latitude, longitude, setCoordinates: (lat, long) => {
@@ -71,7 +63,7 @@ class AddParkSpotScreen extends Component {
         });
     }
 
-    async addParkingSpot() {
+    async saveParkingSpot() {
         // Wait for credentials from async storage
         // TODO: use redux for that
         let email = await AsyncStorage.getItem("email");
@@ -80,8 +72,8 @@ class AddParkSpotScreen extends Component {
         //TODO: integrate into redux flow
         console.log("Add spot for user: ", email);
 
-        return fetch("https://damp-refuge-96622.herokuapp.com/park_spot", {
-            method: "POST",
+        return fetch("https://damp-refuge-96622.herokuapp.com/park_spot/" + this.state.park_spot.id, {
+            method: "PUT",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -93,9 +85,7 @@ class AddParkSpotScreen extends Component {
         }).then(async (response) => {
             console.log("Add park spot response: ", response);
             if (response.status !== 200) {
-                let data = await response.json();
-                console.log("Data: ", data);
-                Alert.alert("Ooops", data.error[0]);
+                //Do something with the data
             }
             return response;
         }).catch((error) => {
@@ -107,12 +97,15 @@ class AddParkSpotScreen extends Component {
     prepareParkSpotForRequest() {
         let name = FormManager.getValue("form", "name");
         let address = FormManager.getValue("form", "address");
-        let latitude = this.state.parkspot.latitude;
-        let longitude = this.state.parkspot.longitude;
+        let latitude = this.state.park_spot.latitude;
+        let longitude = this.state.park_spot.longitude;
         let price_per_hour = FormManager.getValue("form", "price");
         let size = FormManager.getValue("form", "size");
         const sizes = ["small", "medium", "large"];
+        let sizeBefore = this.state.park_spot.size;
         size = sizes[size - 1];
+        if (size == null)
+            size = sizeBefore
         let description = FormManager.getValue("form", "description");
 
         return {
@@ -141,34 +134,28 @@ class AddParkSpotScreen extends Component {
                     <Form.TextInputWidget
                         name='name' // mandatory
                         title='Name'
-                        placeholder='Identification name of the spot'
-                        value={this.state.name}
+                        value={this.state.park_spot.name}
                         clearButtonMode='while-editing'
                         underlineColorAndroid='transparent'
-                        widgetStyles = {{
-                            rowContainer: styles.formElement,
-                            textInput: styles.textInput
-                        }}
                     />
                     <Form.TextInputWidget
                         name='address' // mandatory
                         title='Address'
-                        placeholder='Park spot address'
-                        value={this.state.address}
+                        value={this.state.park_spot.address}
                         clearButtonMode='while-editing'
                         underlineColorAndroid='transparent'
                     />
                     <Form.TextInputWidget
                         name='description' // mandatory
                         title='Description'
-                        placeholder='Additional info about the spot'
+                        value={this.state.park_spot.description}
                         underlineColorAndroid='transparent'
                     />
 
                     <Form.TextInputWidget
                         name='price' // mandatory
                         title='Price'
-                        placeholder='Price / hour'
+                        value={this.state.park_spot.price_per_hour.toString()}
                         clearButtonMode='while-editing'
                         underlineColorAndroid='transparent'
                     />
@@ -192,19 +179,35 @@ class AddParkSpotScreen extends Component {
                             this.goToMap();
                         }}
                     />
+
+                    <TouchableOpacity
+                        style={styles.availabilityButtonTouchable}
+                        onPress={() => {
+                            Actions.addAvailabilityScreen({park_spot_id: this.state.park_spot.id});
+                        }}
+                    >
+                        <Text
+                            style={styles.availabilityButtonText}>
+                            Add Availability
+                        </Text>
+                    </TouchableOpacity>
                 </Form>
+
+
+
                 <View style={styles.saveButtonContainer}>
                     <TouchableOpacity
                         onPress={() => {
-                            this.addParkingSpot()
+                            this.saveParkingSpot()
                                 .then((response) => {
                                     console.log("OK: ", response);
                                     try {
-                                        if(response.status === 200) {
+                                        if (response.status === 200) {
                                             // If add successful => close view
                                             Actions.pop();
                                         }
-                                    } catch (error) {}
+                                    } catch (error) {
+                                    }
                                 });
                         }}
                         style={styles.saveButtonTouchable}
@@ -215,9 +218,6 @@ class AddParkSpotScreen extends Component {
                     </TouchableOpacity>
                 </View>
             </View>
-
-
-
         )
     }
 }
@@ -287,17 +287,14 @@ const styles = StyleSheet.create({
         // paddingTop: 10,
         // paddingBottom: 10,
     },
+    availabilityButtonTouchable: {
+        width: '100%',
+        backgroundColor: '#f59d00',
+        alignItems: 'center'
+    },
+    availabilityButtonText: {
+        padding: 10,
+        color: "#fff"
+    }
 });
 
-const mapStateToProps = (state) => {
-    return {}
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {}
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AddParkSpotScreen);

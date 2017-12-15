@@ -33,13 +33,12 @@ export default class MapScreen extends Component {
                 longitude: 0
             }
         }
-
     }
 
     componentDidMount() {
-
         console.log("Received: ", this.props);
         this.setInitialCoordinates();
+        this.setInitialMarker(this.props.latitude, this.props.longitude);
     }
 
     setInitialCoordinates() {
@@ -66,6 +65,20 @@ export default class MapScreen extends Component {
                     }
                 })
             })
+        }
+    }
+
+    setInitialMarker(lat, long) {
+        if((lat !== null && lat !== undefined && lat !== 0) ||
+            long !== null && long !== undefined && long !== 0) {
+            this.setState({
+                    marker: {
+                        opacity: 1,
+                        latitude: lat,
+                        longitude: long
+                    }
+                },
+            );
         }
     }
 
