@@ -71,6 +71,16 @@ export default class HomeScreen extends Component {
                 <TouchableOpacity
                     style={styles.buttonSignOut}
                     onPress={() => {
+                        Actions.bookingsListScreen();
+                    }}
+                >
+                    <Text style={{ color: '#fff', fontSize: 18 }}>
+                        See your bookings
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.buttonSignOut}
+                    onPress={() => {
                         this.signOut()
                     }}
                 >

@@ -17,12 +17,17 @@ import {ListView} from 'react-native'
 
 
 global.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+global.dsBookings = new ListView.DataSource({rowHasChanged: (r1,r2) => r1!==r2});
+
+global.ds_found_park_spots = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 import AddParkSpotScreen from "./app/screens/AddParkSpotScreen"
 import FormModalScreen from "./app/screens/FormModalScreen"
 import MapScreen from './app/screens/MapScreen';
 import FindParkSpotScreen from './app/screens/FindParkSpotScreen';
 import ParkSpotDetailedViewScreen from './app/screens/ParkSpotDetailedViewScreen';
 import AddAvailabilityScreen from './app/screens/AddAvailabilityScreen'
+import FoundParkSpotsScreen from './app/screens/FoundParkSpotsScreen'
+import BookingsListScreen from './app/screens/BookingsListScreen'
 
 export default class App extends Component {
     componentWillMount() {
@@ -84,6 +89,14 @@ export default class App extends Component {
                         <Scene
                             key="addAvailabilityScreen"
                             component={AddAvailabilityScreen}
+                        />
+                        <Scene
+                            key="fountParkSpotsView"
+                            component={FoundParkSpotsScreen}
+                        />
+                        <Scene
+                            key="bookingsListScreen"
+                            component={BookingsListScreen}
                         />
                     </Scene>
                 </Router>

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {StyleSheet, AsyncStorage, Alert} from 'react-native'
+import {StyleSheet, AsyncStorage, Alert, View, TouchableOpacity, Text} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
 
@@ -92,7 +92,7 @@ class AddParkSpotScreen extends Component {
             })
         }).then(async (response) => {
             console.log("Add park spot response: ", response);
-            if(response.status !== 200) {
+            if (response.status !== 200) {
                 let data = await response.json();
                 console.log("Data: ", data);
                 Alert.alert("Ooops", data.error[0]);
@@ -123,81 +123,101 @@ class AddParkSpotScreen extends Component {
 
     render() {
         return (
-            <Form
-                formName="form"
-                defaults={{}}
-                openModal={(route) => {
-                    Actions.formModalView({
-                        title: route.title,
-                        renderScene: route.renderScene,
-                        renderRightButton: route.renderRightButton.bind(route, Actions)
-                    })
-                }}
+            <View style={{flex: 1}}>
+                <Form
+                    formName="form"
+                    defaults={{}}
+                    openModal={(route) => {
+                        Actions.formModalView({
+                            title: route.title,
+                            renderScene: route.renderScene,
+                            renderRightButton: route.renderRightButton.bind(route, Actions)
+                        })
+                    }}
 
-            >
-                <Form.SeparatorWidget/>
-
-                <Form.TextInputWidget
-                    name='name' // mandatory
-                    title='Name'
-                    placeholder='Identification name of the spot'
-                    value={this.state.name}
-                    clearButtonMode='while-editing'
-                />
-                <Form.TextInputWidget
-                    name='address' // mandatory
-                    title='Address'
-                    placeholder='Park spot address'
-                    value={this.state.address}
-                    clearButtonMode='while-editing'
-                />
-                <Form.TextInputWidget
-                    name='description' // mandatory
-                    title='Description'
-                    placeholder='Additional info about the spot'
-                />
-
-                <Form.TextInputWidget
-
-                    name='price' // mandatory
-                    title='Price'
-                    placeholder='Price / hour'
-                    clearButtonMode='while-editing'
-                />
-                <Form.ModalWidget
-                    title='Size'
-                    displayValue='size'
                 >
                     <Form.SeparatorWidget/>
 
-                    <Form.SelectWidget name='size' title='Size' multiple={false}>
-                        <Form.OptionWidget title='1' value='1'/>
-                        <Form.OptionWidget title='2' value='2'/>
-                        <Form.OptionWidget title='3' value='3'/>
-                    </Form.SelectWidget>
-                </Form.ModalWidget>
+                    <Form.TextInputWidget
+                        name='name' // mandatory
+                        title='Name'
+                        placeholder='Identification name of the spot'
+                        value={this.state.name}
+                        clearButtonMode='while-editing'
+                        underlineColorAndroid='transparent'
+                        widgetStyles = {{
+                            rowContainer: styles.formElement,
+                            textInput: styles.textInput
+                        }}
+                    />
+                    <Form.TextInputWidget
+                        name='address' // mandatory
+                        title='Address'
+                        placeholder='Park spot address'
+                        value={this.state.address}
+                        clearButtonMode='while-editing'
+                        underlineColorAndroid='transparent'
+                    />
+                    <Form.TextInputWidget
+                        name='description' // mandatory
+                        title='Description'
+                        placeholder='Additional info about the spot'
+                        underlineColorAndroid='transparent'
+                    />
 
-                <Form.RowWidget
-                    name='location'
-                    title={this.state.locationTitle}
-                    onPress={() => {
-                        this.goToMap();
-                    }}
-                />
+                    <Form.TextInputWidget
+                        name='price' // mandatory
+                        title='Price'
+                        placeholder='Price / hour'
+                        clearButtonMode='while-editing'
+                        underlineColorAndroid='transparent'
+                    />
+                    <Form.ModalWidget
+                        title='Size'
+                        displayValue='size'
+                    >
+                        <Form.SeparatorWidget/>
 
-                <Form.SubmitWidget
-                    title='Save'
-                    widgetStyles={{}}
-                    onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
-                        this.addParkingSpot()
-                            .then(() => {
-                                postSubmit();
-                            });
+                        <Form.SelectWidget name='size' title='Size' multiple={false}>
+                            <Form.OptionWidget title='1' value='1'/>
+                            <Form.OptionWidget title='2' value='2'/>
+                            <Form.OptionWidget title='3' value='3'/>
+                        </Form.SelectWidget>
+                    </Form.ModalWidget>
 
-                    }}
-                />
+                    <Form.RowWidget
+                        name='location'
+                        title={this.state.locationTitle}
+                        onPress={() => {
+                            this.goToMap();
+                        }}
+                    />
+                </Form>
+                <View style={styles.saveButtonContainer}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.addParkingSpot()
+                                .then((response) => {
+                                    console.log("OK: ", response);
+                                    try {
+                                        if(response.status === 200) {
+                                            // If add successful => close view
+                                            Actions.pop();
+                                        }
+                                    } catch (error) {}
+                                });
+                        }}
+                        style={styles.saveButtonTouchable}
+                    >
+                        <Text style={styles.saveButtonText}>
+                            Save
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
 
-            </Form>
+
+
         )
     }
 }
@@ -245,6 +265,27 @@ const styles = StyleSheet.create({
         marginTop: 20,
         paddingTop: 14,
         paddingBottom: 14,
+    },
+    saveButtonContainer: {
+        marginTop: 10,
+        width: '100%',
+        bottom: 0,
+        left: 0,
+    },
+    saveButtonTouchable: {
+        backgroundColor: '#48aee2',
+        alignItems: 'center',
+        width: "100%"
+    },
+    saveButtonText: {
+        fontSize: 20,
+        padding: 20,
+        color: "#fff",
+        fontWeight: "bold"
+    },
+    formElement: {
+        // paddingTop: 10,
+        // paddingBottom: 10,
     },
 });
 

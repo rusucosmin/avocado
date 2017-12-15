@@ -1,5 +1,15 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, Alert, AsyncStorage, TextInput} from "react-native";
+import {
+    Text,
+    View,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    Alert,
+    AsyncStorage,
+    TextInput
+} from "react-native";
 import {Actions} from 'react-native-router-flux';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
@@ -107,10 +117,9 @@ export default class AddAvailabilityScreen extends Component {
             })
         }).then(async (response) => {
             console.log("Add availability response: ", response);
-            if(response.status !== 200) {
+            if (response.status !== 200) {
                 let data = await response.json();
                 console.log("Data: ", data);
-                Alert.alert("Ooops", data.error[0]);
             }
             return response;
         }).catch((error) => {
@@ -127,90 +136,186 @@ export default class AddAvailabilityScreen extends Component {
         let repeat = this.state.repeat;
         let until = this.state.until.toString();
         return {
-            park_spot_id,start_datetime,end_datetime,repeat,until
+            park_spot_id, start_datetime, end_datetime, repeat, until
         }
     }
 
     render() {
         return (
-            <ScrollView>
-                <Text style={styles.title}> Add Availability </Text>
-                <Text>Repeat: (never,daily,weekly)</Text>
-                <TextInput value={this.state.repeat}
-                           onChangeText={(repeat) => this.setState({repeat})}/>
-                <View style={styles.container}>
-                    <Text style={styles.subtitle}> Select start time </Text>
+            <View>
+                <ScrollView>
+                    <Text style={styles.title}> Add Availability </Text>
+                    <Text>Repeat: (never,daily,weekly)</Text>
+                    <TextInput value={this.state.repeat}
+                               onChangeText={(repeat) => this.setState({repeat})}/>
+                    <View style={styles.container}>
+                        <Text style={styles.subtitle}> Select start time </Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.showStartDatePicker();
+                            }}
+                        >
+                            <Image
+                                source={require('../img/datetime_1.png')}
+                                style={styles.icon}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.container}>
+                        <Text style={styles.subtitle}> Select end time </Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.showEndDatePicker();
+                            }}
+                            style={styles.touchable}
+                        >
+                            <Image
+                                source={require('../img/datetime_1.png')}
+                                style={styles.icon}
+                            />
+                        </TouchableOpacity>
+
+                        <DateTimePicker
+                            mode={"datetime"}
+                            isVisible={this.state.isStartDatetimePickerVisible}
+                            onConfirm={(datetime) => this.confirmStartDatePicker(datetime)}
+                            onCancel={() => this.hideDateTimePicker()}
+                        />
+                        <DateTimePicker
+                            mode={"datetime"}
+                            isVisible={this.state.isEndDatetimePickerVisible}
+                            onConfirm={(datetime) => this.confirmEndDatePicker(datetime)}
+                            onCancel={() => this.hideDateTimePicker()}
+                        />
+                    </View>
+                    <View style={styles.container}>
+                        <Text style={styles.subtitle}> Select until </Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.showUntilPicker();
+                            }}
+                            style={styles.touchable}
+                        >
+                            <Image
+                                source={require('../img/datetime_1.png')}
+                                style={styles.icon}
+                            />
+                        </TouchableOpacity>
+
+                        <DateTimePicker
+                            mode={"datetime"}
+                            isVisible={this.state.isUntilPickerVisible}
+                            onConfirm={(datetime) => this.confirmUntilPicker(datetime)}
+                            onCancel={() => this.hideDateTimePicker()}
+                        />
+                    </View>
+
                     <TouchableOpacity
+                        style={styles.buttonSignOut}
                         onPress={() => {
-                            this.showStartDatePicker();
+                            this.doAdd();
                         }}
                     >
-                        <Image
-                            source={require('../img/datetime_1.png')}
-                            style={styles.icon}
-                        />
+                        <Text style={{color: '#fff', fontSize: 18}}>
+                            SAVE
+                        </Text>
                     </TouchableOpacity>
-                </View>
-                <View style={styles.container}>
-                    <Text style={styles.subtitle}> Select end time </Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.showEndDatePicker();
-                        }}
-                        style={styles.touchable}
-                    >
-                        <Image
-                            source={require('../img/datetime_1.png')}
-                            style={styles.icon}
-                        />
-                    </TouchableOpacity>
+                </ScrollView>
 
-                    <DateTimePicker
-                        mode={"datetime"}
-                        isVisible={this.state.isStartDatetimePickerVisible}
-                        onConfirm={(datetime) => this.confirmStartDatePicker(datetime)}
-                        onCancel={() => this.hideDateTimePicker()}
-                    />
-                    <DateTimePicker
-                        mode={"datetime"}
-                        isVisible={this.state.isEndDatetimePickerVisible}
-                        onConfirm={(datetime) => this.confirmEndDatePicker(datetime)}
-                        onCancel={() => this.hideDateTimePicker()}
-                    />
-                </View>
-                <View style={styles.container}>
-                    <Text style={styles.subtitle}> Select until </Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.showUntilPicker();
-                        }}
-                        style={styles.touchable}
-                    >
-                        <Image
-                            source={require('../img/datetime_1.png')}
-                            style={styles.icon}
-                        />
-                    </TouchableOpacity>
+                {/*<View style={{flex: 1}}>*/}
+                    {/*<Form*/}
+                        {/*formName="form"*/}
+                        {/*defaults={{}}*/}
+                        {/*openModal={(route) => {*/}
+                            {/*Actions.formModalView({*/}
+                                {/*title: route.title,*/}
+                                {/*renderScene: route.renderScene,*/}
+                                {/*renderRightButton: route.renderRightButton.bind(route, Actions)*/}
+                            {/*})*/}
+                        {/*}}*/}
 
-                    <DateTimePicker
-                        mode={"datetime"}
-                        isVisible={this.state.isUntilPickerVisible}
-                        onConfirm={(datetime) => this.confirmUntilPicker(datetime)}
-                        onCancel={() => this.hideDateTimePicker()}
-                    />
-                </View>
+                    {/*>*/}
+                        {/*<Form.SeparatorWidget/>*/}
 
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        this.doAdd();
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        SAVE
-                    </Text>
-                </TouchableOpacity>
-            </ScrollView>
+                        {/*<Form.ModalWidget*/}
+                            {/*title='Repeat'*/}
+                            {/*displayValue='repeat'*/}
+                        {/*>*/}
+                            {/*<Form.SeparatorWidget/>*/}
+
+                            {/*<Form.SelectWidget name='repeat' title='Repeat' multiple={false}>*/}
+                                {/*<Form.OptionWidget title='never' value='never'/>*/}
+                                {/*<Form.OptionWidget title='daily' value='daily'/>*/}
+                                {/*<Form.OptionWidget title='weekly' value='weekly'/>*/}
+                            {/*</Form.SelectWidget>*/}
+                        {/*</Form.ModalWidget>*/}
+
+                        {/*<Form.RowWidget*/}
+                            {/*name='startDatetime'*/}
+                            {/*title={"Start time"}*/}
+                            {/*onPress={() => {*/}
+                                {/*this.showStartDatePicker()*/}
+                            {/*}}*/}
+                        {/*/>*/}
+                        {/*<Form.RowWidget*/}
+                            {/*name='endDatetime'*/}
+                            {/*title={"End time"}*/}
+                            {/*onPress={() => {*/}
+                                {/*this.showEndDatePicker()*/}
+                            {/*}}*/}
+                        {/*/>*/}
+                        {/*<Form.RowWidget*/}
+                            {/*name='repeatDatetime'*/}
+                            {/*title={"Repeat until"}*/}
+                            {/*onPress={() => {*/}
+                                {/*this.showUntilPicker()*/}
+                            {/*}}*/}
+                        {/*/>*/}
+                    {/*</Form>*/}
+
+
+                    {/*<View style={styles.saveButtonContainer}>*/}
+                        {/*<TouchableOpacity*/}
+                            {/*onPress={() => {*/}
+                                {/*this.doAdd()*/}
+                                    {/*.then((response) => {*/}
+                                        {/*console.log("OK: ", response);*/}
+                                        {/*try {*/}
+                                            {/*if (response.status === 200) {*/}
+                                                {/*// If add successful => close view*/}
+                                                {/*Actions.pop();*/}
+                                            {/*}*/}
+                                        {/*} catch (error) {*/}
+                                        {/*}*/}
+                                    {/*});*/}
+                            {/*}}*/}
+                            {/*style={styles.saveButtonTouchable}*/}
+                        {/*>*/}
+                            {/*<Text style={styles.saveButtonText}>*/}
+                                {/*Save*/}
+                            {/*</Text>*/}
+                        {/*</TouchableOpacity>*/}
+                    {/*</View>*/}
+                    {/*<DateTimePicker*/}
+                        {/*mode={"datetime"}*/}
+                        {/*isVisible={this.state.isStartDatetimePickerVisible}*/}
+                        {/*onConfirm={(datetime) => this.confirmStartDatePicker(datetime)}*/}
+                        {/*onCancel={() => this.hideDateTimePicker()}*/}
+                    {/*/>*/}
+                    {/*<DateTimePicker*/}
+                        {/*mode={"datetime"}*/}
+                        {/*isVisible={this.state.isEndDatetimePickerVisible}*/}
+                        {/*onConfirm={(datetime) => this.confirmEndDatePicker(datetime)}*/}
+                        {/*onCancel={() => this.hideDateTimePicker()}*/}
+                    {/*/>*/}
+                    {/*<DateTimePicker*/}
+                        {/*mode={"datetime"}*/}
+                        {/*isVisible={this.state.isUntilPickerVisible}*/}
+                        {/*onConfirm={(datetime) => this.confirmUntilPicker(datetime)}*/}
+                        {/*onCancel={() => this.hideDateTimePicker()}*/}
+                    {/*/>*/}
+                {/*</View>*/}
+            </View>
         )
     }
 }

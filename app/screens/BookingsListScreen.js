@@ -6,65 +6,61 @@ import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
 
-class ParkSpotsView extends Component {
+export default class BookingsListScreen extends Component {
     constructor(props) {
         super(props);
+
+
         this.state = {
-            parkSpotDS: global.ds.cloneWithRows([])
+            bookingsDS: global.dsBookings.cloneWithRows([])
         }
     }
 
     componentDidMount() {
-        AsyncStorage.getItem("token")
-            .then((token) => {
-                return fetch("https://damp-refuge-96622.herokuapp.com/user/park_spots", {
-                    method: "GET",
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
+        AsyncStorage.getItem("bookings")
+            .then((bookingsObject) => {
+                lstres = [
+                    {
+                        start_datetime: "2017-03-03 13:00",
+                        end_datetime: "2017-03-03 14:00",
+                        park_spot_id: 1,
+                        address: "Street Teodor Mihali nr 9",
+                        name: "CJ30ZZZ"
                     }
-                })
-                    .then((response) => {
-                        console.log("Sign in response: ", response);
-                        if (response.status == 200) {
-                            // dispatch(fetchingParkSpotsSuccess());
-                            console.log("Park spots fetched");
-                            return response.json();
-                        }
-                        else {
-                            dispatch(fetchingParkSpotsFail())
-                        }
-                    })
-                    .then((responseData) => {
-                        console.log("List of park spots: ", responseData);
-                        // dispatch(fetchingParkSpotsSave(responseData))
-                        this.setState({parkSpotDS: global.ds.cloneWithRows(responseData)})
-                    })
-                    .catch((error) => {
-                    })
+                ];
+                if(bookingsObject !== null){
+                    let bookings = JSON.parse(bookingsObject);
+                    if(bookings.bookingsList !== null) {
+                        let bookingsList = bookings.bookingsList;
+                        lstres = bookingsList;
+                    }
+                }
+
+                this.setState({bookingsDS: global.dsBookings.cloneWithRows(lstres)});
             });
     }
 
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => Actions.parkSpotDetailedView({park_spot: record})}>
+                <TouchableOpacity onPress={() => {Alert.alert(record.address)}}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>
                                 <Text style={styles.parkspotName}>{record.name}</Text>
                             </View>
                             <View style={styles.halfView}>
+                                <Text style={styles.parkspotAddress}>{record.start_datetime} to </Text>
+                                <Text style={styles.parkspotAddress}>{record.end_datetime} </Text>
                                 <Text style={styles.parkspotAddress}>{record.address}</Text>
                             </View>
                         </View>
                         <View style={styles.secondaryListView}>
-                            <View style={styles.halfView}>
+                            <View style={styles.halfViewTopRight}>
                                 <Text style={styles.parkSpotPrice}>{record.price_per_hour} / hr</Text>
-                            </View>
-                            <View style={styles.halfView}>
                                 <Text style={styles.parkspotSize}>{record.size}</Text>
+                            </View>
+                            <View style={styles.halfViewBottomRight}>
                             </View>
                         </View>
                     </View>
@@ -77,12 +73,10 @@ class ParkSpotsView extends Component {
         return (
             <View>
                 <ListView
-                    dataSource={this.state.parkSpotDS}
+                    dataSource={this.state.bookingsDS}
                     renderRow={this.renderRow.bind(this)}
                     enableEmptySections={true}
                 />
-                <ActionButton buttonColor="rgba(236,76,60,1)"
-                              onPress={() => {Actions.addParkSpotView();}}/>
             </View>
         );
     }
@@ -121,6 +115,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'column'
     },
+    halfViewTopRight: {
+        flex: .4,
+        justifyContent: 'center',
+        flexDirection: 'column'
+    },
+    halfViewBottomRight: {
+        flex: .6,
+        justifyContent: 'center',
+        flexDirection: 'column'
+    },
     mainListView: {
         flex: .75,
         justifyContent: 'center',
@@ -132,24 +136,3 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     }
 });
-
-//TODO: Integrate with redux
-const mapStateToProps = (state) => {
-    return {
-        user: state.user,
-        parkSpotList: state.parkSpotList
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchParkSpots: (token) => {
-            return dispatch(fetchParkSpotsAction(token))
-        }
-    }
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParkSpotsView);

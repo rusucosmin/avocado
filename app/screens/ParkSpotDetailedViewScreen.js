@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {StyleSheet, AsyncStorage, Alert, TouchableOpacity, Text} from 'react-native'
+import {StyleSheet, AsyncStorage, Alert, TouchableOpacity, Text, View} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
 
@@ -84,10 +84,8 @@ export default class ParkSpotDetailedViewScreen extends Component {
             })
         }).then(async (response) => {
             console.log("Add park spot response: ", response);
-            if(response.status !== 200) {
-                let data = await response.json();
-                console.log("Data: ", data);
-                Alert.alert("Ooops", data.error[0]);
+            if (response.status !== 200) {
+                //Do something with the data
             }
             return response;
         }).catch((error) => {
@@ -118,90 +116,108 @@ export default class ParkSpotDetailedViewScreen extends Component {
 
     render() {
         return (
-            <Form
-                formName="form"
-                defaults={{}}
-                openModal={(route) => {
-                    Actions.formModalView({
-                        title: route.title,
-                        renderScene: route.renderScene,
-                        renderRightButton: route.renderRightButton.bind(route, Actions)
-                    })
-                }}
+            <View style={{flex: 1}}>
+                <Form
+                    formName="form"
+                    defaults={{}}
+                    openModal={(route) => {
+                        Actions.formModalView({
+                            title: route.title,
+                            renderScene: route.renderScene,
+                            renderRightButton: route.renderRightButton.bind(route, Actions)
+                        })
+                    }}
 
-            >
-                <Form.SeparatorWidget/>
-
-                <Form.TextInputWidget
-                    name='name' // mandatory
-                    title='Name'
-                    value={this.state.park_spot.name}
-                    clearButtonMode='while-editing'
-                />
-                <Form.TextInputWidget
-                    name='address' // mandatory
-                    title='Address'
-                    value={this.state.park_spot.address}
-                    clearButtonMode='while-editing'
-                />
-                <Form.TextInputWidget
-                    name='description' // mandatory
-                    title='Description'
-                    value={this.state.park_spot.description}
-                />
-
-                <Form.TextInputWidget
-
-                    name='price' // mandatory
-                    title='Price'
-                    value={this.state.park_spot.price_per_hour.toString()}
-                    clearButtonMode='while-editing'
-                />
-                <Form.ModalWidget
-                    title='Size'
-                    displayValue='size'
                 >
                     <Form.SeparatorWidget/>
 
-                    <Form.SelectWidget name='size' title='Size' multiple={false}>
-                        <Form.OptionWidget title='1' value='1'/>
-                        <Form.OptionWidget title='2' value='2'/>
-                        <Form.OptionWidget title='3' value='3'/>
-                    </Form.SelectWidget>
-                </Form.ModalWidget>
+                    <Form.TextInputWidget
+                        name='name' // mandatory
+                        title='Name'
+                        value={this.state.park_spot.name}
+                        clearButtonMode='while-editing'
+                        underlineColorAndroid='transparent'
+                    />
+                    <Form.TextInputWidget
+                        name='address' // mandatory
+                        title='Address'
+                        value={this.state.park_spot.address}
+                        clearButtonMode='while-editing'
+                        underlineColorAndroid='transparent'
+                    />
+                    <Form.TextInputWidget
+                        name='description' // mandatory
+                        title='Description'
+                        value={this.state.park_spot.description}
+                        underlineColorAndroid='transparent'
+                    />
 
-                <Form.RowWidget
-                    name='location'
-                    title={this.state.locationTitle}
-                    onPress={() => {
-                        this.goToMap();
-                    }}
-                />
-                {/*TODO: REMOVE THIS*/}
-                <Form.SubmitWidget
-                    title='Save'
-                    widgetStyles={{}}
-                    onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
-                        this.saveParkingSpot()
-                            .then(() => {
-                                postSubmit();
-                                // Actions.homeView();
-                            });
+                    <Form.TextInputWidget
+                        name='price' // mandatory
+                        title='Price'
+                        value={this.state.park_spot.price_per_hour.toString()}
+                        clearButtonMode='while-editing'
+                        underlineColorAndroid='transparent'
+                    />
+                    <Form.ModalWidget
+                        title='Size'
+                        displayValue='size'
+                    >
+                        <Form.SeparatorWidget/>
 
-                    }}
-                />
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        Actions.addAvailabilityScreen({park_spot_id: this.state.park_spot.id});
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        Add Availability
-                    </Text>
-                </TouchableOpacity>
+                        <Form.SelectWidget name='size' title='Size' multiple={false}>
+                            <Form.OptionWidget title='1' value='1'/>
+                            <Form.OptionWidget title='2' value='2'/>
+                            <Form.OptionWidget title='3' value='3'/>
+                        </Form.SelectWidget>
+                    </Form.ModalWidget>
 
-            </Form>
+                    <Form.RowWidget
+                        name='location'
+                        title={this.state.locationTitle}
+                        onPress={() => {
+                            this.goToMap();
+                        }}
+                    />
+
+                    <TouchableOpacity
+                        style={styles.availabilityButtonTouchable}
+                        onPress={() => {
+                            Actions.addAvailabilityScreen({park_spot_id: this.state.park_spot.id});
+                        }}
+                    >
+                        <Text
+                            style={styles.availabilityButtonText}>
+                            Add Availability
+                        </Text>
+                    </TouchableOpacity>
+                </Form>
+
+
+
+                <View style={styles.saveButtonContainer}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.saveParkingSpot()
+                                .then((response) => {
+                                    console.log("OK: ", response);
+                                    try {
+                                        if (response.status === 200) {
+                                            // If add successful => close view
+                                            Actions.pop();
+                                        }
+                                    } catch (error) {
+                                    }
+                                });
+                        }}
+                        style={styles.saveButtonTouchable}
+                    >
+                        <Text style={styles.saveButtonText}>
+                            Save
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         )
     }
 }
@@ -250,14 +266,35 @@ const styles = StyleSheet.create({
         paddingTop: 14,
         paddingBottom: 14,
     },
-    buttonSignOut: {
-        width: '78%',
-        backgroundColor: '#4D9DE0',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-        paddingTop: 14,
-        paddingBottom: 14,
+    saveButtonContainer: {
+        marginTop: 10,
+        width: '100%',
+        bottom: 0,
+        left: 0,
     },
+    saveButtonTouchable: {
+        backgroundColor: '#48aee2',
+        alignItems: 'center',
+        width: "100%"
+    },
+    saveButtonText: {
+        fontSize: 20,
+        padding: 20,
+        color: "#fff",
+        fontWeight: "bold"
+    },
+    formElement: {
+        // paddingTop: 10,
+        // paddingBottom: 10,
+    },
+    availabilityButtonTouchable: {
+        width: '100%',
+        backgroundColor: '#f59d00',
+        alignItems: 'center'
+    },
+    availabilityButtonText: {
+        padding: 10,
+        color: "#fff"
+    }
 });
 
