@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'redux';
-import { View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native'
+import { View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage, Image} from 'react-native'
 
 
 export default class HomeScreen extends Component {
@@ -36,58 +36,47 @@ export default class HomeScreen extends Component {
         return (
 
             <View style={styles.container}>
-                <Text style={styles.h1}> Welcome, {this.state.username}! </Text>
-
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        Actions.findParkSpotView();
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        Find Park Spot
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        this.seePersonalParkSpots()
-                    }}
-                >
-                    <Text style={{color: '#fff', fontSize: 18}}>
-                        Check out your park spots
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        Actions.addParkSpotView();
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        Add Park Spot
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        Actions.bookingsListScreen();
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        See your bookings
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.buttonSignOut}
-                    onPress={() => {
-                        this.signOut()
-                    }}
-                >
-                    <Text style={{ color: '#fff', fontSize: 18 }}>
-                        Sign out
-                    </Text>
-                </TouchableOpacity>
+                <View style={styles.upperScreen}>
+                    <Image
+                        source={require('../img/homeImage.jpg')}
+                        style={styles.backgroundImage}
+                    >
+                        <TouchableOpacity
+                            style={styles.buttonSignOut}
+                            onPress={() => {
+                                Actions.findParkSpotView();
+                            }}
+                        >
+                            <Text style={{ color: '#fff', fontSize: 18 }}>
+                                Find a Parking Spot
+                            </Text>
+                        </TouchableOpacity>
+                    </Image>
+                </View>
+                <View style={styles.lowerScreen}>
+                    <View style={[styles.halfScreenWidth]}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.signOut()
+                            }}
+                        >
+                            <Image
+                                source={require('../img/out.png')}
+                                style={styles.iconImage}/>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[styles.halfScreenWidth]}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.seePersonalParkSpots()
+                            }}
+                        >
+                            <Image
+                                source={require('../img/parkMe.png')}
+                                style={styles.iconImage}/>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
         )
     }
@@ -96,42 +85,42 @@ export default class HomeScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    upperScreen: {
+        flex: .8,
+    },
+    backgroundImage: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
         justifyContent: 'center',
         alignItems: 'center',
     },
-    row: {
+    iconImage: {
+        width: 70,
+        height: 70,
+    },
+    lowerScreen : {
+        flex: .2,
         flexDirection: 'row',
     },
-    textlabel: {
-        fontSize: 20,
-        flex: 1,
-    },
-    textinput: {
-        flex: 2,
-        fontSize: 20,
+    halfScreenWidth: {
+        flex: .5,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     h1: {
         fontSize: 40,
         textAlign: 'center',
         margin: 10,
     },
-    h2: {
-        fontSize: 30,
-        textAlign: 'center',
-        margin: 10,
-    },
-    item: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
     buttonSignOut: {
-        width: '78%',
-        backgroundColor: '#4D9DE0',
+        width: '68%',
+        backgroundColor: '#FF7F50',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
-        paddingTop: 14,
-        paddingBottom: 14,
+        marginTop: 0,
+        paddingTop: 20,
+        paddingBottom: 20,
     },
 });
