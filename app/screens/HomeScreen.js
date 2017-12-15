@@ -32,6 +32,10 @@ export default class HomeScreen extends Component {
         Actions.parkSpotsView();
     }
 
+    seePersonalBookings() {
+        Actions.bookingsListScreen();
+    }
+
     render() {
         return (
 
@@ -54,7 +58,7 @@ export default class HomeScreen extends Component {
                     </Image>
                 </View>
                 <View style={styles.lowerScreen}>
-                    <View style={[styles.halfScreenWidth]}>
+                    <View style={[styles.screenWidth]}>
                         <TouchableOpacity
                             onPress={() => {
                                 this.signOut()
@@ -65,7 +69,18 @@ export default class HomeScreen extends Component {
                                 style={styles.iconImage}/>
                         </TouchableOpacity>
                     </View>
-                    <View style={[styles.halfScreenWidth]}>
+                    <View style={[styles.screenWidth]}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.seePersonalBookings()
+                            }}
+                        >
+                            <Image
+                                source={require('../img/booking.png')}
+                                style={styles.bookingImage}/>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[styles.screenWidth]}>
                         <TouchableOpacity
                             onPress={() => {
                                 this.seePersonalParkSpots()
@@ -100,12 +115,16 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
     },
+    bookingImage: {
+        width: 60,
+        height: 60,
+    },
     lowerScreen : {
         flex: .2,
         flexDirection: 'row',
     },
-    halfScreenWidth: {
-        flex: .5,
+    screenWidth: {
+        flex: .33,
         justifyContent: 'center',
         alignItems: 'center',
     },
