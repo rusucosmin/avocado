@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
+import * as Style from '../styles';
 
 class ParkSpotsView extends Component {
     constructor(props) {
@@ -75,14 +76,16 @@ class ParkSpotsView extends Component {
 
     render() {
         return (
-            <View>
+            <View style={{flex:1}}>
                 <ListView
                     dataSource={this.state.parkSpotDS}
                     renderRow={this.renderRow.bind(this)}
                     enableEmptySections={true}
                 />
-                <ActionButton buttonColor="rgba(236,76,60,1)"
+
+                <ActionButton buttonColor={Style.general.color1}
                               onPress={() => {Actions.addParkSpotView();}}/>
+
             </View>
         );
     }

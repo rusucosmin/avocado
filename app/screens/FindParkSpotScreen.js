@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, Alert, Asyn
 import {Actions} from 'react-native-router-flux';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
+import * as Style from '../styles';
 
 export default class FindParkSpotScreen extends Component {
 
@@ -177,7 +178,7 @@ export default class FindParkSpotScreen extends Component {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={{flexGrow: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
+            <ScrollView contentContainerStyle={{flexGrow: 1, flexDirection: 'column', justifyContent: 'space-between', backgroundColor:"#fff"}}>
                 <Text style={styles.title}> Find a park spot </Text>
                 <View style={styles.container}>
                     <Text style={styles.subtitle}> Select location </Text>
@@ -237,10 +238,10 @@ export default class FindParkSpotScreen extends Component {
                         onPress={() => {
                             this.findParkSpots()
                         }}
-                        style={styles.goButtonTouchable}
+                        style={Style.buttons.fixedBottom.touchable}
                         disabled={this.state.isGoButtonDisabled}
                     >
-                        <Text style={styles.goButtonText}>
+                        <Text style={Style.buttons.fixedBottom.text}>
                             GO
                         </Text>
                     </TouchableOpacity>
@@ -255,7 +256,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent',
     },
     row: {
         flexDirection: 'row',
@@ -285,17 +285,6 @@ const styles = StyleSheet.create({
         width: '100%',
         bottom: 0,
         left: 0,
-    },
-    goButtonTouchable: {
-        backgroundColor: '#48aee2',
-        alignItems: 'center',
-        width: "100%"
-    },
-    goButtonText: {
-        fontSize: 20,
-        padding: 20,
-        color: "#fff",
-        fontWeight: "bold"
     },
     bottomSpace: {
         height: 60

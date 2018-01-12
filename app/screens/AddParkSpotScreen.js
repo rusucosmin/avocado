@@ -3,6 +3,7 @@ import {Actions} from 'react-native-router-flux';
 import {StyleSheet, AsyncStorage, Alert, View, TouchableOpacity, Text} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
+import * as Style from '../styles';
 
 class AddParkSpotScreen extends Component {
     constructor(props) {
@@ -31,6 +32,7 @@ class AddParkSpotScreen extends Component {
 
     componentWillReceiveProps() {
         console.log("Form props: ", this.props);
+        FormManager.reset('form');
     }
 
     updateLocationTitle() {
@@ -122,6 +124,7 @@ class AddParkSpotScreen extends Component {
     }
 
     render() {
+
         return (
             <View style={{flex: 1}}>
                 <Form
@@ -207,9 +210,9 @@ class AddParkSpotScreen extends Component {
                                     } catch (error) {}
                                 });
                         }}
-                        style={styles.saveButtonTouchable}
+                        style={Style.buttons.fixedBottom.touchable}
                     >
-                        <Text style={styles.saveButtonText}>
+                        <Text style={Style.buttons.fixedBottom.text}>
                             Save
                         </Text>
                     </TouchableOpacity>
@@ -271,17 +274,6 @@ const styles = StyleSheet.create({
         width: '100%',
         bottom: 0,
         left: 0,
-    },
-    saveButtonTouchable: {
-        backgroundColor: '#48aee2',
-        alignItems: 'center',
-        width: "100%"
-    },
-    saveButtonText: {
-        fontSize: 20,
-        padding: 20,
-        color: "#fff",
-        fontWeight: "bold"
     },
     formElement: {
         // paddingTop: 10,

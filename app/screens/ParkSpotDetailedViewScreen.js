@@ -3,6 +3,7 @@ import {Actions} from 'react-native-router-flux';
 import {StyleSheet, AsyncStorage, Alert, TouchableOpacity, Text, View} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
+import * as Style from '../styles';
 
 export default class ParkSpotDetailedViewScreen extends Component {
     constructor(props) {
@@ -210,9 +211,9 @@ export default class ParkSpotDetailedViewScreen extends Component {
                                     }
                                 });
                         }}
-                        style={styles.saveButtonTouchable}
+                        style={Style.buttons.fixedBottom.touchable}
                     >
-                        <Text style={styles.saveButtonText}>
+                        <Text style={Style.buttons.fixedBottom.text}>
                             Save
                         </Text>
                     </TouchableOpacity>
@@ -272,24 +273,13 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
     },
-    saveButtonTouchable: {
-        backgroundColor: '#48aee2',
-        alignItems: 'center',
-        width: "100%"
-    },
-    saveButtonText: {
-        fontSize: 20,
-        padding: 20,
-        color: "#fff",
-        fontWeight: "bold"
-    },
     formElement: {
         // paddingTop: 10,
         // paddingBottom: 10,
     },
     availabilityButtonTouchable: {
         width: '100%',
-        backgroundColor: '#f59d00',
+        backgroundColor: Style.general.color1,
         alignItems: 'center'
     },
     availabilityButtonText: {

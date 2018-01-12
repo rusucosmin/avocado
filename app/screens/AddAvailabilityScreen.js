@@ -8,11 +8,13 @@ import {
     ScrollView,
     Alert,
     AsyncStorage,
-    TextInput
+    TextInput, TouchableWithoutFeedback
 } from "react-native";
 import {Actions} from 'react-native-router-flux';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
+import * as Style from '../styles';
+import {RadioButtons} from "react-native-radio-buttons";
 
 export default class AddAvailabilityScreen extends Component {
 
@@ -22,31 +24,85 @@ export default class AddAvailabilityScreen extends Component {
             park_spot_id: this.props.park_spot_id,
             startDatetime: 0,
             endDatetime: 0,
-            until: 0,
+            untilDatetime: 0,
             isStartDatetimePickerVisible: false,
             isEndDatetimePickerVisible: false,
-            isUntilPickerVisible: false,
-            repeat: "never",
-            until: null
+            isUntilDatetimePickerVisible: false,
+            repeat: this.options[0]
         }
     }
 
-    showStartDatePicker() {
+    //Radio button options
+    options = [
+        {
+            label: "Never",
+            value: "never"
+        },
+        {
+            label: "Daily",
+            value: "daily"
+        },
+        {
+            label: "Weekly",
+            value: "weekly"
+        }
+    ];
+
+    setSelectedOption(option) {
+        this.setState({
+            repeat: option
+        })
+    }
+
+    renderOption(option, selected, onSelect, index) {
+        console.log("Option: ", option);
+        console.log("Selected: ", selected);
+        const style = selected ?
+            {
+                fontWeight: 'bold',
+                backgroundColor: Style.general.color6,
+                color: "#fff",
+                padding: 6
+            } :
+            {
+                color: Style.general.color6,
+                padding: 6
+            };
+
+        return (
+            <TouchableOpacity onPress={onSelect} key={index}>
+                <Text style={style}> {option.label} </Text>
+            </TouchableOpacity>
+        );
+    }
+
+    renderOptionContainer(options) {
+        return (
+            <View
+                style={{flexDirection: "row", borderWidth: 2, borderColor: Style.general.color6}}
+            >
+                {options}
+            </View>
+        )
+    }
+
+
+    showStartDatetimePicker() {
         console.log("Show start datetime picker");
         this.setState({
             isStartDatetimePickerVisible: true
         })
     }
 
-    showEndDatePicker() {
+    showEndDatetimePicker() {
         this.setState({
             isEndDatetimePickerVisible: true
         })
     }
 
-    showUntilPicker() {
+    showUntilDatetimePicker() {
         this.setState({
-            isUntilPickerVisible: true
+            isUntilDatetimePickerVisible: true
         })
     }
 
@@ -54,7 +110,7 @@ export default class AddAvailabilityScreen extends Component {
         this.setState({
             isStartDatetimePickerVisible: false,
             isEndDatetimePickerVisible: false,
-            isUntilPickerVisible: false,
+            isUntilDatetimePickerVisible: false,
         })
     }
 
@@ -66,7 +122,7 @@ export default class AddAvailabilityScreen extends Component {
         return moment(datetime).unix();
     }
 
-    confirmStartDatePicker(datetime) {
+    confirmStartDatetimePicker(datetime) {
         console.log("S datetime: ", datetime);
         console.log("S datetime formatted: ", this.parseDatetime(datetime));
         this.setState({
@@ -75,7 +131,7 @@ export default class AddAvailabilityScreen extends Component {
         this.hideDateTimePicker();
     }
 
-    confirmEndDatePicker(datetime) {
+    confirmEndDatetimePicker(datetime) {
         let startTimestamp = this.parseDatetimeTimestamp(this.state.startDatetime);
         let endTimestamp = this.parseDatetimeTimestamp(datetime);
         if (endTimestamp < startTimestamp) {
@@ -89,9 +145,9 @@ export default class AddAvailabilityScreen extends Component {
         console.log("State: ", this.state);
     }
 
-    confirmUntilPicker(datetime) {
+    confirmUntilDatetimePicker(datetime) {
         this.setState({
-            until: this.parseDatetime(datetime)
+            untilDatetime: this.parseDatetime(datetime)
         });
         this.hideDateTimePicker();
     }
@@ -133,189 +189,105 @@ export default class AddAvailabilityScreen extends Component {
         let park_spot_id = this.state.park_spot_id;
         let start_datetime = this.state.startDatetime.toString();
         let end_datetime = this.state.endDatetime.toString();
-        let repeat = this.state.repeat;
-        let until = this.state.until.toString();
+        let repeat = this.state.repeat.value;
+        let until_datetime = this.state.untilDatetime.toString();
         return {
-            park_spot_id, start_datetime, end_datetime, repeat, until
+            park_spot_id, start_datetime, end_datetime, repeat, until: until_datetime
         }
     }
 
     render() {
         return (
-            <View>
-                <ScrollView>
-                    <Text style={styles.title}> Add Availability </Text>
-                    <Text>Repeat: (never,daily,weekly)</Text>
-                    <TextInput value={this.state.repeat}
-                               onChangeText={(repeat) => this.setState({repeat})}/>
-                    <View style={styles.container}>
-                        <Text style={styles.subtitle}> Select start time </Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.showStartDatePicker();
-                            }}
-                        >
-                            <Image
-                                source={require('../img/datetime_1.png')}
-                                style={styles.icon}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={styles.subtitle}> Select end time </Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.showEndDatePicker();
-                            }}
-                            style={styles.touchable}
-                        >
-                            <Image
-                                source={require('../img/datetime_1.png')}
-                                style={styles.icon}
-                            />
-                        </TouchableOpacity>
-
-                        <DateTimePicker
-                            mode={"datetime"}
-                            isVisible={this.state.isStartDatetimePickerVisible}
-                            onConfirm={(datetime) => this.confirmStartDatePicker(datetime)}
-                            onCancel={() => this.hideDateTimePicker()}
-                        />
-                        <DateTimePicker
-                            mode={"datetime"}
-                            isVisible={this.state.isEndDatetimePickerVisible}
-                            onConfirm={(datetime) => this.confirmEndDatePicker(datetime)}
-                            onCancel={() => this.hideDateTimePicker()}
-                        />
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={styles.subtitle}> Select until </Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.showUntilPicker();
-                            }}
-                            style={styles.touchable}
-                        >
-                            <Image
-                                source={require('../img/datetime_1.png')}
-                                style={styles.icon}
-                            />
-                        </TouchableOpacity>
-
-                        <DateTimePicker
-                            mode={"datetime"}
-                            isVisible={this.state.isUntilPickerVisible}
-                            onConfirm={(datetime) => this.confirmUntilPicker(datetime)}
-                            onCancel={() => this.hideDateTimePicker()}
-                        />
-                    </View>
-
+            <ScrollView style={{flex: 1, backgroundColor: "#fff"}}>
+                <Text style={styles.title}> Add Availability </Text>
+                <View style={[styles.container, {marginBottom: 18}]}>
+                    <Text style={styles.subtitle}> Repeat </Text>
+                    <RadioButtons
+                        options={this.options}
+                        selectedOption={this.state.repeat}
+                        onSelection={(option) => this.setSelectedOption(option)}
+                        renderOption={this.renderOption}
+                        optionContainerStyle={styles.optionContainerStyle}
+                        renderContainer={this.renderOptionContainer}
+                        optionStyle={{fontSize: 30}}
+                    />
+                </View>
+                <View style={styles.container}>
+                    <Text style={styles.subtitle}> Select start time </Text>
                     <TouchableOpacity
-                        style={styles.buttonSignOut}
+                        onPress={() => {
+                            this.showStartDatetimePicker();
+                        }}
+                    >
+                        <Image
+                            source={require('../img/datetime_1.png')}
+                            style={styles.icon}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.container}>
+                    <Text style={styles.subtitle}> Select end time </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.showEndDatetimePicker();
+                        }}
+                        style={styles.touchable}
+                    >
+                        <Image
+                            source={require('../img/datetime_1.png')}
+                            style={styles.icon}
+                        />
+                    </TouchableOpacity>
+
+                    <DateTimePicker
+                        mode={"datetime"}
+                        isVisible={this.state.isStartDatetimePickerVisible}
+                        onConfirm={(datetime) => this.confirmStartDatetimePicker(datetime)}
+                        onCancel={() => this.hideDateTimePicker()}
+                    />
+                    <DateTimePicker
+                        mode={"datetime"}
+                        isVisible={this.state.isEndDatetimePickerVisible}
+                        onConfirm={(datetime) => this.confirmEndDatetimePicker(datetime)}
+                        onCancel={() => this.hideDateTimePicker()}
+                    />
+                </View>
+                <View
+                    style={this.state.repeat.value === "never" ? [styles.hiddenUntilDatetimePicker] : styles.container}>
+                    <Text style={styles.subtitle}> Select until time </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.showUntilDatetimePicker();
+                        }}
+                        style={styles.touchable}
+                    >
+                        <Image
+                            source={require('../img/datetime_1.png')}
+                            style={styles.icon}
+                        />
+                    </TouchableOpacity>
+
+                    <DateTimePicker
+                        mode={"datetime"}
+                        isVisible={this.state.isUntilDatetimePickerVisible}
+                        onConfirm={(datetime) => this.confirmUntilDatetimePicker(datetime)}
+                        onCancel={() => this.hideDateTimePicker()}
+                    />
+                </View>
+
+                <View style={styles.saveButtonContainer}>
+                    <TouchableOpacity
+                        style={Style.buttons.fixedBottom.touchable}
                         onPress={() => {
                             this.doAdd();
                         }}
                     >
-                        <Text style={{color: '#fff', fontSize: 18}}>
+                        <Text style={Style.buttons.fixedBottom.text}>
                             SAVE
                         </Text>
                     </TouchableOpacity>
-                </ScrollView>
-
-                {/*<View style={{flex: 1}}>*/}
-                    {/*<Form*/}
-                        {/*formName="form"*/}
-                        {/*defaults={{}}*/}
-                        {/*openModal={(route) => {*/}
-                            {/*Actions.formModalView({*/}
-                                {/*title: route.title,*/}
-                                {/*renderScene: route.renderScene,*/}
-                                {/*renderRightButton: route.renderRightButton.bind(route, Actions)*/}
-                            {/*})*/}
-                        {/*}}*/}
-
-                    {/*>*/}
-                        {/*<Form.SeparatorWidget/>*/}
-
-                        {/*<Form.ModalWidget*/}
-                            {/*title='Repeat'*/}
-                            {/*displayValue='repeat'*/}
-                        {/*>*/}
-                            {/*<Form.SeparatorWidget/>*/}
-
-                            {/*<Form.SelectWidget name='repeat' title='Repeat' multiple={false}>*/}
-                                {/*<Form.OptionWidget title='never' value='never'/>*/}
-                                {/*<Form.OptionWidget title='daily' value='daily'/>*/}
-                                {/*<Form.OptionWidget title='weekly' value='weekly'/>*/}
-                            {/*</Form.SelectWidget>*/}
-                        {/*</Form.ModalWidget>*/}
-
-                        {/*<Form.RowWidget*/}
-                            {/*name='startDatetime'*/}
-                            {/*title={"Start time"}*/}
-                            {/*onPress={() => {*/}
-                                {/*this.showStartDatePicker()*/}
-                            {/*}}*/}
-                        {/*/>*/}
-                        {/*<Form.RowWidget*/}
-                            {/*name='endDatetime'*/}
-                            {/*title={"End time"}*/}
-                            {/*onPress={() => {*/}
-                                {/*this.showEndDatePicker()*/}
-                            {/*}}*/}
-                        {/*/>*/}
-                        {/*<Form.RowWidget*/}
-                            {/*name='repeatDatetime'*/}
-                            {/*title={"Repeat until"}*/}
-                            {/*onPress={() => {*/}
-                                {/*this.showUntilPicker()*/}
-                            {/*}}*/}
-                        {/*/>*/}
-                    {/*</Form>*/}
-
-
-                    {/*<View style={styles.saveButtonContainer}>*/}
-                        {/*<TouchableOpacity*/}
-                            {/*onPress={() => {*/}
-                                {/*this.doAdd()*/}
-                                    {/*.then((response) => {*/}
-                                        {/*console.log("OK: ", response);*/}
-                                        {/*try {*/}
-                                            {/*if (response.status === 200) {*/}
-                                                {/*// If add successful => close view*/}
-                                                {/*Actions.pop();*/}
-                                            {/*}*/}
-                                        {/*} catch (error) {*/}
-                                        {/*}*/}
-                                    {/*});*/}
-                            {/*}}*/}
-                            {/*style={styles.saveButtonTouchable}*/}
-                        {/*>*/}
-                            {/*<Text style={styles.saveButtonText}>*/}
-                                {/*Save*/}
-                            {/*</Text>*/}
-                        {/*</TouchableOpacity>*/}
-                    {/*</View>*/}
-                    {/*<DateTimePicker*/}
-                        {/*mode={"datetime"}*/}
-                        {/*isVisible={this.state.isStartDatetimePickerVisible}*/}
-                        {/*onConfirm={(datetime) => this.confirmStartDatePicker(datetime)}*/}
-                        {/*onCancel={() => this.hideDateTimePicker()}*/}
-                    {/*/>*/}
-                    {/*<DateTimePicker*/}
-                        {/*mode={"datetime"}*/}
-                        {/*isVisible={this.state.isEndDatetimePickerVisible}*/}
-                        {/*onConfirm={(datetime) => this.confirmEndDatePicker(datetime)}*/}
-                        {/*onCancel={() => this.hideDateTimePicker()}*/}
-                    {/*/>*/}
-                    {/*<DateTimePicker*/}
-                        {/*mode={"datetime"}*/}
-                        {/*isVisible={this.state.isUntilPickerVisible}*/}
-                        {/*onConfirm={(datetime) => this.confirmUntilPicker(datetime)}*/}
-                        {/*onCancel={() => this.hideDateTimePicker()}*/}
-                    {/*/>*/}
-                {/*</View>*/}
-            </View>
+                </View>
+            </ScrollView>
         )
     }
 }
@@ -325,7 +297,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent',
+    },
+    inputView: {
+        flex: 1,
+        flexDirection: 'row'
+    },
+    inputHalfView: {
+        flex: 1,
+        flexDirection: 'row',
     },
     row: {
         flexDirection: 'row',
@@ -334,6 +313,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         textAlign: 'center',
         margin: 10,
+        marginBottom: 20
     },
     subtitle: {
         fontSize: 16,
@@ -359,4 +339,20 @@ const styles = StyleSheet.create({
         paddingTop: 14,
         paddingBottom: 14,
     },
+    saveButtonContainer: {
+        marginTop: 10,
+        width: '100%',
+        bottom: 0,
+        left: 0,
+    },
+    hiddenUntilDatetimePicker: {
+        width: 0,
+        height: 0,
+        marginBottom: 14
+    },
+    optionContainerStyle: {
+        borderWidth: 2,
+        borderColor: Style.general.color6,
+        backgroundColor: "red"
+    }
 });

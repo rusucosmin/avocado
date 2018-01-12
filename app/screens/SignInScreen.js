@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage, StatusBar} from 'react-native';
 import {connect} from 'react-redux';
 import {signIn as signInAction} from '../actions/users';
+import * as Style from '../styles';
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {email: '', password: ''};
     }
+
     componentDidMount() {
         this.isSignedIn();
     }
@@ -26,7 +28,7 @@ class LoginScreen extends Component {
                 token = response;
                 console.log("Local token: ", token);
 
-                if(email !== null && email !== undefined && token !== null && token !== undefined) {
+                if (email !== null && email !== undefined && token !== null && token !== undefined) {
                     console.log("Local signing");
                     const user = {
                         email: email,
@@ -60,17 +62,24 @@ class LoginScreen extends Component {
     render() {
         return (
             <View style={styles.mainView}>
+                <StatusBar backgroundColor="#f4791c"/>
                 <View style={styles.titleBox}>
-                    <Text style={styles.title}>
-                        ParkParkGo
-                    </Text>
                     <Image
-                        source={require('../img/logo.png')}
-                        style={styles.logo}
-                    />
-                    <Text style={styles.subtitle}>
-                        We find it, you park it
-                    </Text>
+                        source={require('../img/parkparkgo_login_gradient.png')}
+                        style={[styles.imageContainer,styles.backgroundImage]}
+                    >
+                        <Text style={styles.title}>
+                            ParkParkGo
+                        </Text>
+                        <Image
+                            source={require('../img/logo.png')}
+                            style={styles.logo}
+                        />
+                        <Text style={styles.subtitle}>
+                            We find it, you park it
+                        </Text>
+                    </Image>
+
                 </View>
                 <View style={styles.loginBox}>
                     <TextInput
@@ -110,6 +119,7 @@ class LoginScreen extends Component {
                                   this.goToSignUp();
                               }}
                         > SIGN UP </Text>
+
                     </Text>
                 </View>
             </View>
@@ -122,15 +132,24 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     titleBox: {
-        flex: 1.2,
+        flex: 1,
         backgroundColor: '#EF823F',
+    },
+    imageContainer: {
+        flex: 1.2,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
     },
+    backgroundImage: {
+        flex: 1,
+        width: '100%',
+        height: null,
+    },
     title: {
         color: '#fff',
         fontSize: 24,
+        fontFamily: 'Oswald'
     },
     subtitle: {
         color: '#fff',
@@ -164,8 +183,8 @@ const styles = StyleSheet.create({
     },
     buttonSignIn: {
         width: '78%',
-        backgroundColor: '#4D9DE0',
         justifyContent: 'center',
+        backgroundColor: Style.general.color5,
         alignItems: 'center',
         marginTop: 20,
         paddingTop: 14,

@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
-import {Alert, StyleSheet, View, Text, Image, TextInput, TouchableOpacity} from 'react-native'
+import {Alert, StyleSheet, View, Text, Image, TextInput, TouchableOpacity, StatusBar} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {signUp as signUpAction} from '../actions/users';
+import * as Style from '../styles';
 
 class SignUpScreen extends Component {
     constructor(props) {
@@ -58,7 +59,12 @@ class SignUpScreen extends Component {
     render() {
         return (
             <View style={styles.mainView}>
+                <StatusBar backgroundColor="#38a5c1"/>
                 <View style={styles.titleBox}>
+                    <Image
+                        source={require('../img/signup_gradient.png')}
+                        style={[styles.imageContainer,styles.backgroundImage]}
+                    >
                     <Text style={styles.title}>
                         Create new account
                     </Text>
@@ -66,6 +72,8 @@ class SignUpScreen extends Component {
                         source={require('../img/signup2.png')}
                         style={styles.logo}
                     />
+                    </Image>
+
                 </View>
                 <View style={styles.loginBox}>
                     <TextInput
@@ -109,11 +117,19 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     titleBox: {
+        flex: 1,
+        backgroundColor: '#EF823F',
+    },
+    imageContainer: {
         flex: 1.2,
-        backgroundColor: '#F5C851',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
+    },
+    backgroundImage: {
+        flex: 1,
+        width: '100%',
+        height: null,
     },
     title: {
         color: '#fff',
@@ -152,7 +168,7 @@ const styles = StyleSheet.create({
     },
     buttonSignIn: {
         width: '78%',
-        backgroundColor: '#4D9DE0',
+        backgroundColor: Style.general.color6,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,

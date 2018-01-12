@@ -102,7 +102,8 @@ export default class FoundParkSpotsScreen extends Component {
             console.log("Local bookings: ", bookings);
             bookings = JSON.parse(bookings);
             console.log("JSON local bookings: ", bookings);
-            bookings.bookingsList.add(booking);
+            console.log("Bookings list: ", bookings.bookingsList);
+            bookings.bookingsList.push(booking);
         } else {
             bookings = {
                 bookingsList: [booking]

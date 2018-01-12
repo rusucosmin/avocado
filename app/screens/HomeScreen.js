@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'redux';
-import { View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage, Image} from 'react-native'
+import {View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage, Image, StatusBar} from 'react-native'
+import * as Style from '../styles';
 
 
 export default class HomeScreen extends Component {
@@ -32,47 +33,62 @@ export default class HomeScreen extends Component {
         Actions.parkSpotsView();
     }
 
+    seePersonalBookings() {
+        Actions.bookingsListScreen();
+    }
+
     render() {
         return (
-
             <View style={styles.container}>
+                {/*<StatusBar backgroundColor="#f6ab58"/>*/}
                 <View style={styles.upperScreen}>
                     <Image
-                        source={require('../img/homeImage.jpg')}
+                        source={require('../img/home_gradient.png')}
                         style={styles.backgroundImage}
                     >
                         <TouchableOpacity
-                            style={styles.buttonSignOut}
+                            style={styles.buttonFindParkingSpot}
                             onPress={() => {
                                 Actions.findParkSpotView();
                             }}
                         >
-                            <Text style={{ color: '#fff', fontSize: 18 }}>
+                            <Text style={styles.textFindParkingSpot}>
                                 Find a Parking Spot
                             </Text>
                         </TouchableOpacity>
                     </Image>
                 </View>
                 <View style={styles.lowerScreen}>
-                    <View style={[styles.halfScreenWidth]}>
+                    <View style={[styles.screenWidth]}>
                         <TouchableOpacity
                             onPress={() => {
                                 this.signOut()
                             }}
                         >
                             <Image
-                                source={require('../img/out.png')}
+                                source={require('../img/logout.png')}
                                 style={styles.iconImage}/>
                         </TouchableOpacity>
                     </View>
-                    <View style={[styles.halfScreenWidth]}>
+                    <View style={[styles.screenWidth]}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.seePersonalBookings()
+                            }}
+                        >
+                            <Image
+                                source={require('../img/booking.png')}
+                                style={styles.iconImage}/>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[styles.screenWidth]}>
                         <TouchableOpacity
                             onPress={() => {
                                 this.seePersonalParkSpots()
                             }}
                         >
                             <Image
-                                source={require('../img/parkMe.png')}
+                                source={require('../img/my_park_spots.png')}
                                 style={styles.iconImage}/>
                         </TouchableOpacity>
                     </View>
@@ -87,7 +103,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     upperScreen: {
-        flex: .8,
+        flex: .9,
     },
     backgroundImage: {
         position: "absolute",
@@ -97,12 +113,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     iconImage: {
-        width: 70,
-        height: 70,
+        width: 30,
+        height: 30,
     },
-    lowerScreen : {
-        flex: .2,
+    lowerScreen: {
+        backgroundColor: Style.general.color6,
+        flex: .1,
         flexDirection: 'row',
+    },
+    screenWidth: {
+        flex: .33,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     halfScreenWidth: {
         flex: .5,
@@ -114,13 +136,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
     },
-    buttonSignOut: {
+    buttonFindParkingSpot: {
         width: '68%',
-        backgroundColor: '#FF7F50',
+        backgroundColor: Style.general.color6,
+        // borderWidth: 2,
+        // borderColor: '#fff',
         justifyContent: 'center',
+        opacity: .8,
         alignItems: 'center',
         marginTop: 0,
         paddingTop: 20,
         paddingBottom: 20,
     },
-});
+    textFindParkingSpot: {
+        color: "#fff",
+        fontSize: 18
+    }
+})
+;
