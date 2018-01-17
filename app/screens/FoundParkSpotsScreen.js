@@ -17,7 +17,7 @@ export default class FoundParkSpotsScreen extends Component {
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => this.bookParkSpot(record)}>
+                <TouchableOpacity onPress={() => this.doBookParkSpot(record)}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>
@@ -41,13 +41,31 @@ export default class FoundParkSpotsScreen extends Component {
         );
     }
 
-    async bookParkSpot(parkspot) {
+    async doBookParkSpot(parkspot) {
         let token = await AsyncStorage.getItem("token");
+
+        return fetch("https://damp-refuge-96622.herokuapp.com/user",{
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            },
+        }).then((response) => {
+            if(response.status == 200){
+                return response.json();
+            }
+            return response;
+        }).then((user) => {
+            return this.bookParkSpot(parkspot,user.id,token);
+        });
+    }
+
+    async bookParkSpot(parkspot,userId,token) {
 
         //TODO: integrate into redux flow
         console.log("Book for parkspot: ", parkspot);
         console.log("Book for props: ", this.props);
-
         return fetch("https://damp-refuge-96622.herokuapp.com/bookings", {
             method: "POST",
             headers: {
@@ -55,10 +73,11 @@ export default class FoundParkSpotsScreen extends Component {
                 'Content-Type': 'application/json',
                 'Authorization': "Bearer " + token
             },
-            body: JSON.stringify({
+            body: JSON.stringify({booking: {
                 start_datetime: this.props.startDatetime,
                 end_datetime: this.props.endDatetime,
-                park_spot_id: parkspot.id
+                park_spot_id: parkspot.id,
+                user_id: userId,}
             })
         }).then(async (response) => {
             console.log("Book park spot response: ", response);
