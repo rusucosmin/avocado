@@ -16,28 +16,36 @@ export default class BookingsListScreen extends Component {
         }
     }
 
-    componentDidMount() {
-        AsyncStorage.getItem("bookings")
-            .then((bookingsObject) => {
-                lstres = [
-                    {
-                        start_datetime: "2017-03-03 13:00",
-                        end_datetime: "2017-03-03 14:00",
-                        park_spot_id: 1,
-                        address: "Street Teodor Mihali nr 9",
-                        name: "CJ30ZZZ"
-                    }
-                ];
-                if(bookingsObject !== null){
-                    let bookings = JSON.parse(bookingsObject);
-                    if(bookings.bookingsList !== null) {
-                        let bookingsList = bookings.bookingsList;
-                        lstres = bookingsList;
-                    }
-                }
+    async loadData() {
+        let token = await AsyncStorage.getItem("token");
+        return fetch("https://damp-refuge-96622.herokuapp.com/history", {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            }
+        }).then((response) => {
+            if(response.status == 200){
+                return response.json();
+            }
+            return response;
+        }).then((data) => {
+            if(data.length == 0){
+                Alert.alert("You have not made any bookings yet!");
+                this.setState({bookingsDS: global.dsBookings.cloneWithRows([])})
+            }
+            else {
+                this.setState({bookingsDS: global.dsBookings.cloneWithRows(data)})
+            }
+        }).catch((error) => {
+            console.log("Find park spot error: ", error);
+            return error;
+        });
+    }
 
-                this.setState({bookingsDS: global.dsBookings.cloneWithRows(lstres)});
-            });
+    componentDidMount() {
+        Promise.all([this.loadData()]);
     }
 
     renderRow(record) {
