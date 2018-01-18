@@ -1,18 +1,15 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
 import {ListView, Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
-import {connect} from 'react-redux';
-import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
-import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
 
-export default class BookingsListScreen extends Component {
+export default class BookingHistoryListScreen extends Component {
     constructor(props) {
         super(props);
 
 
         this.state = {
-            bookingsDS: global.dsBookings.cloneWithRows([])
+            bookingsDS: global.dsHistoryBookings.cloneWithRows([])
         }
     }
 
@@ -33,16 +30,16 @@ export default class BookingsListScreen extends Component {
         }).then((data) => {
             if(data.length == 0){
                 Alert.alert("You have not made any bookings yet!");
-                this.setState({bookingsDS: global.dsBookings.cloneWithRows([])})
+                this.setState({bookingsDS: global.dsHistoryBookings.cloneWithRows([])})
             }
             else {
                 future_bookigns = [];
                 DATETIME_THRESHOLD_NOW = Date.now();
                 for(let bookingKey in data) {
-                    if(this.getTimeFromData(data[bookingKey].start_datetime) > DATETIME_THRESHOLD_NOW)
+                    if(this.getTimeFromData(data[bookingKey].start_datetime) < DATETIME_THRESHOLD_NOW)
                         future_bookigns.push(data[bookingKey]);
                 }
-                this.setState({bookingsDS: global.dsBookings.cloneWithRows(future_bookigns)})
+                this.setState({bookingsDS: global.dsHistoryBookings.cloneWithRows(future_bookigns)})
             }
         }).catch((error) => {
             console.log("Find park spot error: ", error);
