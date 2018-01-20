@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {StyleSheet, AsyncStorage, Alert, TouchableOpacity, Text, View} from 'react-native'
+import {AsyncStorage, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
 import * as Style from '../styles';

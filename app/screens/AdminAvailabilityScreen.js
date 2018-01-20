@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {ListView, Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
-import ActionButton from 'react-native-action-button'
+import {Alert, AsyncStorage, ListView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import moment from "moment/moment";
 
 export default class AdminAvailabilityScreen extends Component {

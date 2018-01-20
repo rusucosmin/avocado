@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Alert, StyleSheet, View, Text, Image, TextInput, TouchableOpacity, StatusBar} from 'react-native'
+import {Alert, Image, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {signUp as signUpAction} from '../actions/users';

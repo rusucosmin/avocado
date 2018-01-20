@@ -1,18 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {
-    StatusBar,
-    View,
-    Button,
-    FlatList,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    AsyncStorage,
-    TextInput,
-    Dimensions,
-    Platform
-} from 'react-native'
+import {Dimensions, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {connect} from 'react-redux';
 import MapView from 'react-native-maps';
 
