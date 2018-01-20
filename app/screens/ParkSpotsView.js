@@ -83,7 +83,7 @@ class ParkSpotsView extends Component {
                     enableEmptySections={true}
                 />
 
-                <ActionButton buttonColor={Style.general.color1}
+                <ActionButton buttonColor={Style.general.color5}
                               onPress={() => {Actions.addParkSpotView();}}/>
 
             </View>

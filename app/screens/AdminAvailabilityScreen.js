@@ -33,6 +33,7 @@ export default class AdminAvailabilityScreen extends Component {
                 this.setState({availabilityDS: global.dsAdminAvailability.cloneWithRows([])})
             }
             else {
+                console.log("Availabilities: ", data);
                 this.setState({availabilityDS: global.dsAdminAvailability.cloneWithRows(data)})
             }
         }).catch((error) => {
@@ -57,7 +58,6 @@ export default class AdminAvailabilityScreen extends Component {
             }
         }).then((response) => {
             if(response.status == 200) {
-                Promise.all(this.loadData());
                 Alert.alert(
                     "Result",
                     "Availability was successfully deleted",
@@ -74,6 +74,7 @@ export default class AdminAvailabilityScreen extends Component {
     }
 
     renderRow(record) {
+        console.log("record: ", record.park_spot);
         return (
             <View>
                 <TouchableOpacity onPress={() => {

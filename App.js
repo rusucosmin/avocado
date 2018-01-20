@@ -38,6 +38,7 @@ import UserProfileScreen from './app/screens/UserProfileScreen'
 import AdminBookingsScreen from './app/screens/AdminBookingScreen'
 import AdminParkSpotsScreen from './app/screens/AdminParkSpotsScreen'
 import AdminAvailabilityScreen from './app/screens/AdminAvailabilityScreen'
+import AdminHomeScreen from "./app/screens/AdminHomeScreen";
 
 export default class App extends Component {
     componentWillMount() {
@@ -137,6 +138,12 @@ export default class App extends Component {
                             key="adminAvailability"
                             title="Touch availability to delete"
                             component={AdminAvailabilityScreen}
+                        />
+                        <Scene
+                            key="adminHome"
+                            title="Admin Home"
+                            hideNavBar
+                            component={AdminHomeScreen}
                         />
                     </Scene>
                 </Router>

@@ -35,9 +35,33 @@ class LoginScreen extends Component {
                         token: token,
                         fetching: false
                     };
-                    Actions.reset("homeView", {user: user});
+                    this.verifyUserRole(token)
                 }
             })
+    }
+
+    verifyUserRole(token) {
+        fetch("https://damp-refuge-96622.herokuapp.com/user",{
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            },
+        }).then((response) => {
+            if(response.status == 200){
+                return response.json();
+            }
+            return response;
+        }).then((user) => {
+            AsyncStorage.setItem("email", this.props.user.email);
+            AsyncStorage.setItem("token", token);
+            if(user.role == 'admin')
+                Actions.reset("adminHome", {user: user});
+            else
+                Actions.reset("homeView", {user: user});
+
+        });
     }
 
     signIn() {
@@ -46,9 +70,8 @@ class LoginScreen extends Component {
             .then(() => {
                 const token = this.props.user.token;
                 if (token !== null && token !== undefined) {
-                    AsyncStorage.setItem("email", this.props.user.email);
-                    AsyncStorage.setItem("token", token);
-                    Actions.reset("homeView", {user: this.props.user});
+                    // Get user data
+                    this.verifyUserRole(token);
                 } else {
                     Alert.alert("Ooops", "No user with this data.");
                 }

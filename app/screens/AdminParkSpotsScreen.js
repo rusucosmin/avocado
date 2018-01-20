@@ -16,6 +16,10 @@ class AdminParkSpotsScreen extends Component {
     }
 
     componentDidMount() {
+        this.loadData()
+    }
+
+    loadData() {
         AsyncStorage.getItem("token")
             .then((token) => {
                 return fetch("https://damp-refuge-96622.herokuapp.com/admin/park_spots", {
@@ -27,7 +31,7 @@ class AdminParkSpotsScreen extends Component {
                     }
                 })
                     .then((response) => {
-                        console.log("Sign in response: ", response);
+                        console.log("Get Park Spots response: ", response);
                         if (response.status == 200) {
                             // dispatch(fetchingParkSpotsSuccess());
                             console.log("Park spots fetched");
@@ -39,8 +43,8 @@ class AdminParkSpotsScreen extends Component {
                     })
                     .then((responseData) => {
                         console.log("List of park spots: ", responseData);
-                        if(responseData.length == 0) {
-                            Alert.alert("Info","You do not have any park spot yet. Touch the button to add park spot.");
+                        if (responseData.length == 0) {
+                            Alert.alert("Info", "You do not have any park spot yet. Touch the button to add park spot.");
                         }
                         // dispatch(fetchingParkSpotsSave(responseData))
                         this.setState({parkSpotDS: global.dsAdminParkSpots.cloneWithRows(responseData)})
@@ -53,7 +57,7 @@ class AdminParkSpotsScreen extends Component {
     async deleteParkSpot(parkSpotId) {
         let token = await AsyncStorage.getItem("token");
 
-        return fetch("https://damp-refuge-96622.herokuapp.com/park_spot/" + parkSpotId.toString(),{
+        return fetch("https://damp-refuge-96622.herokuapp.com/park_spot/" + parkSpotId.toString(), {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
@@ -61,19 +65,26 @@ class AdminParkSpotsScreen extends Component {
                 'Authorization': "Bearer " + token
             }
         }).then((response) => {
-            if(response.status == 200) {
-                Promise.all(this.loadData());
+            if (response.status == 200) {
                 Alert.alert(
                     "Result",
                     "Park Spot was successfully deleted",
                     [
-                        {text: "Ok", onPress: () => {this.loadData();}},
-                        {text: "Go back", onPress: () => {Actions.pop();}}
+                        {
+                            text: "Ok", onPress: () => {
+                                this.loadData();
+                            }
+                        },
+                        {
+                            text: "Go back", onPress: () => {
+                                Actions.pop();
+                            }
+                        }
                     ]
                 )
             }
-            else{
-                Alert.alert("Result","Park spot was not deleted!");
+            else {
+                Alert.alert("Result", "Park spot was not deleted!");
             }
         });
     }
@@ -85,10 +96,17 @@ class AdminParkSpotsScreen extends Component {
                     Alert.alert("Confirmation",
                         "Are you sure you want to delete this park spot?",
                         [
-                            {text: "Yes", onPress: () => {Promise.all(this.deleteParkSpot(record.id));}},
-                            {text: "No", onPress: () => {}}
+                            {
+                                text: "Yes", onPress: () => {
+                                    Promise.all(this.deleteParkSpot(record.id));
+                                }
+                            },
+                            {
+                                text: "No", onPress: () => {
+                                }
+                            }
                         ],
-                        { cancelable: false });
+                        {cancelable: false});
                 }}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
@@ -115,7 +133,7 @@ class AdminParkSpotsScreen extends Component {
 
     render() {
         return (
-            <View style={{flex:1}}>
+            <View style={{flex: 1}}>
                 <ListView
                     dataSource={this.state.parkSpotDS}
                     renderRow={this.renderRow.bind(this)}

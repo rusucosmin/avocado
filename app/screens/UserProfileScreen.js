@@ -14,10 +14,6 @@ export default class UserProfileScreen extends Component {
 
     }
 
-    componentDidUpdate() {
-        this.updateLocationTitle();
-    }
-
     componentWillReceiveProps() {
         console.log("Form props: ", this.props);
     }
@@ -28,7 +24,7 @@ export default class UserProfileScreen extends Component {
         let phone = FormManager.getValue("form", "phone");
 
         return {
-            email :email,
+            email: email,
             address: address,
             phone: phone
         }
@@ -37,7 +33,7 @@ export default class UserProfileScreen extends Component {
     async saveUserProfile() {
         let token = await AsyncStorage.getItem("token");
 
-        return fetch("https://damp-refuge-96622.herokuapp.com/user/" + this.state.user.id,{
+        return fetch("https://damp-refuge-96622.herokuapp.com/user/" + this.state.user.id, {
             method: "PATCH",
             headers: {
                 'Accept': 'application/json',
@@ -119,41 +115,6 @@ export default class UserProfileScreen extends Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
-                {this.state.user.role == 'admin' &&
-                <View style={styles.saveButtonContainer}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            Actions.adminBookings();
-                        }}
-                        style={Style.buttons.fixedBottom.touchable}
-                    >
-                        <Text style={Style.buttons.fixedBottom.text}>
-                            See all bookings
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            Actions.adminParkSpots();
-                        }}
-                        style={Style.buttons.fixedBottom.touchable}
-                    >
-                        <Text style={Style.buttons.fixedBottom.text}>
-                            See all park spots
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            Actions.adminAvailability();
-                        }}
-                        style={Style.buttons.fixedBottom.touchable}
-                    >
-                        <Text style={Style.buttons.fixedBottom.text}>
-                            See all availabilities
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                }
-
             </View>
         )
     }
