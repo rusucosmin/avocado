@@ -10,7 +10,7 @@ export const general = {
 export const buttons = {
     fixedBottom: {
         touchable: {
-            backgroundColor: general.color6,
+            backgroundColor: general.color5,
             alignItems: 'center',
             width: "100%"
         },
@@ -21,4 +21,4 @@ export const buttons = {
             fontWeight: "bold"
         },
     }
-}
+};

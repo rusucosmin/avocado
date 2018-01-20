@@ -48,7 +48,7 @@ export default class HomeScreen extends Component {
                 {/*<StatusBar backgroundColor="#f6ab58"/>*/}
                 <View style={styles.upperScreen}>
                     <Image
-                        source={require('../img/home_back.png')}
+                        source={require('../img/home_gradient.png')}
                         style={styles.backgroundImage}
                     >
                         <TouchableOpacity
@@ -65,23 +65,12 @@ export default class HomeScreen extends Component {
                         <TouchableOpacity
                             style={styles.buttonFindParkingSpot}
                             onPress={() => {
-                                Actions.bookingHistory();
+                                Promise.all([this.seePersonalBookings()]);
                             }}
                         >
 
                             <Text style={styles.textFindParkingSpot}>
-                                See booking history
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.buttonFindParkingSpot}
-                            onPress={() => {
-                                this.seeUserProfile();
-                            }}
-                        >
-
-                            <Text style={styles.textFindParkingSpot}>
-                                Your profile
+                                See booked spots
                             </Text>
                         </TouchableOpacity>
                     </Image>
@@ -101,11 +90,11 @@ export default class HomeScreen extends Component {
                     <View style={[styles.screenWidth]}>
                         <TouchableOpacity
                             onPress={() => {
-                                Promise.all([this.seePersonalBookings()]);
+                                Actions.bookingHistory()
                             }}
                         >
                             <Image
-                                source={require('../img/booking.png')}
+                                source={require('../img/history.png')}
                                 style={styles.iconImage}/>
                         </TouchableOpacity>
                     </View>
@@ -119,6 +108,18 @@ export default class HomeScreen extends Component {
                                 source={require('../img/my_park_spots.png')}
                                 style={styles.iconImage}/>
                         </TouchableOpacity>
+                    </View>
+                    <View style={[styles.screenWidth]}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.seeUserProfile()
+                            }}
+                        >
+                            <Image
+                                source={require('../img/profile.png')}
+                                style={styles.iconImage}/>
+                        </TouchableOpacity>
+
                     </View>
                 </View>
             </View>
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
             flexDirection: 'row',
         },
         screenWidth: {
-            flex: .33,
+            flex: .25,
             justifyContent: 'center',
             alignItems: 'center',
         },
@@ -171,10 +172,10 @@ const styles = StyleSheet.create({
             borderColor: Style.general.color1,
             borderRadius: 10,
             justifyContent: 'center',
-            opacity: .9,
+            opacity: .8,
             alignItems: 'center',
             marginTop: 0,
-            marginBottom: 6,
+            marginBottom: 4,
             paddingTop: 20,
             paddingBottom: 20,
         },

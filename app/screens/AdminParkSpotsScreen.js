@@ -68,7 +68,7 @@ class AdminParkSpotsScreen extends Component {
             if (response.status == 200) {
                 Alert.alert(
                     "Result",
-                    "Park Spot was successfully deleted",
+                    "Park spot was successfully deleted",
                     [
                         {
                             text: "Ok", onPress: () => {

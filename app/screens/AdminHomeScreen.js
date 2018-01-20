@@ -40,7 +40,7 @@ export default class AdminHomeScreen extends Component {
     async seeUserProfile() {
         let token = await AsyncStorage.getItem("token");
 
-        return fetch("https://damp-refuge-96622.herokuapp.com/user",{
+        return fetch("https://damp-refuge-96622.herokuapp.com/user", {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -48,7 +48,7 @@ export default class AdminHomeScreen extends Component {
                 'Authorization': "Bearer " + token
             },
         }).then((response) => {
-            if(response.status == 200){
+            if (response.status == 200) {
                 return response.json();
             }
             return response;
@@ -63,20 +63,10 @@ export default class AdminHomeScreen extends Component {
                 {/*<StatusBar backgroundColor="#f6ab58"/>*/}
                 <View style={styles.upperScreen}>
                     <Image
-                        source={require('../img/home_back.png')}
+                        source={require('../img/admin_panel.png')}
                         style={styles.backgroundImage}
                     >
-                        <TouchableOpacity
-                            style={styles.buttonFindParkingSpot}
-                            onPress={() => {
-                                this.seeUserProfile();
-                            }}
-                        >
 
-                            <Text style={styles.textFindParkingSpot}>
-                                Your profile
-                            </Text>
-                        </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.buttonFindParkingSpot}
                             onPress={() => {
@@ -127,24 +117,14 @@ export default class AdminHomeScreen extends Component {
                     <View style={[styles.screenWidth]}>
                         <TouchableOpacity
                             onPress={() => {
-                                Promise.all([this.seePersonalBookings()]);
+                                this.seeUserProfile()
                             }}
                         >
                             <Image
-                                source={require('../img/booking.png')}
+                                source={require('../img/profile.png')}
                                 style={styles.iconImage}/>
                         </TouchableOpacity>
-                    </View>
-                    <View style={[styles.screenWidth]}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.seePersonalParkSpots()
-                            }}
-                        >
-                            <Image
-                                source={require('../img/my_park_spots.png')}
-                                style={styles.iconImage}/>
-                        </TouchableOpacity>
+
                     </View>
                 </View>
             </View>
@@ -177,7 +157,7 @@ const styles = StyleSheet.create({
             flexDirection: 'row',
         },
         screenWidth: {
-            flex: .33,
+            flex: .5,
             justifyContent: 'center',
             alignItems: 'center',
         },
@@ -194,12 +174,14 @@ const styles = StyleSheet.create({
         buttonFindParkingSpot: {
             width: '68%',
             backgroundColor: Style.general.color5,
-            // borderWidth: 2,
-            // borderColor: '#fff',
+            borderWidth: 2,
+            borderColor: Style.general.color1,
+            borderRadius: 10,
             justifyContent: 'center',
-            opacity: .9,
+            opacity: .8,
             alignItems: 'center',
             marginTop: 0,
+            marginBottom: 4,
             paddingTop: 20,
             paddingBottom: 20,
         },

@@ -64,8 +64,9 @@ export default class UserProfileScreen extends Component {
                     <Form.SeparatorWidget/>
 
                     <Form.TextInputWidget
+                        editable={false}
                         name='name' // mandatory
-                        title='Name'
+                        title='Email'
                         value={this.state.user.email}
                         clearButtonMode='while-editing'
                         underlineColorAndroid='transparent'
@@ -85,6 +86,7 @@ export default class UserProfileScreen extends Component {
                     />
 
                     <Form.TextInputWidget
+                        editable={false}
                         name='role' // mandatory
                         title='Role'
                         value={this.state.user.role}

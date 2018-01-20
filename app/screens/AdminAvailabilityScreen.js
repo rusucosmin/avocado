@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
 import {ListView, Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
 import ActionButton from 'react-native-action-button'
+import moment from "moment/moment";
 
 export default class AdminAvailabilityScreen extends Component {
     constructor(props) {
@@ -11,6 +12,10 @@ export default class AdminAvailabilityScreen extends Component {
         this.state = {
             availabilityDS: global.dsAdminAvailability.cloneWithRows([])
         }
+    }
+
+    componentDidMount() {
+        Promise.all([this.loadData()]);
     }
 
     async loadData() {
@@ -42,8 +47,9 @@ export default class AdminAvailabilityScreen extends Component {
         });
     }
 
-    componentDidMount() {
-        Promise.all([this.loadData()]);
+
+    parseDatetime(datetime) {
+        return moment(datetime).format("YYYY-MM-DD HH:mm");
     }
 
     async deleteAvailability(availabilityId) {
@@ -89,12 +95,12 @@ export default class AdminAvailabilityScreen extends Component {
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>
-                                {/*<Text style={styles.parkspotName}>{record.park_spot.name}</Text>*/}
+                                <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                             </View>
                             <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{record.start_datetime} to </Text>
-                                <Text style={styles.parkspotAddress}>{record.end_datetime} </Text>
-                                {/*<Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>*/}
+                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
+                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
+                                <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
                             </View>
                         </View>
                         <View style={styles.secondaryListView}>

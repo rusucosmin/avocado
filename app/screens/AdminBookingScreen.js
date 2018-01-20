@@ -77,6 +77,7 @@ export default class BookingsListScreen extends Component {
     }
 
     renderRow(record) {
+        console.log("Admin record: ", record);
         return (
             <View>
                 <TouchableOpacity onPress={() => {
@@ -97,11 +98,12 @@ export default class BookingsListScreen extends Component {
                                 <Text style={styles.parkspotAddress}>{record.start_datetime} to </Text>
                                 <Text style={styles.parkspotAddress}>{record.end_datetime} </Text>
                                 <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
+                                <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
                             </View>
                         </View>
                         <View style={styles.secondaryListView}>
                             <View style={styles.halfViewTopRight}>
-                                <Text style={styles.parkSpotPrice}>{record.user.phone} / hr</Text>
+                                <Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>
                                 <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
                             </View>
                             <View style={styles.halfViewBottomRight}>

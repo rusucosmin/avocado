@@ -199,7 +199,7 @@ export default class AddAvailabilityScreen extends Component {
     render() {
         return (
             <ScrollView style={{flex: 1, backgroundColor: "#fff"}}>
-                <Text style={styles.title}> Add Availability </Text>
+                <Text style={styles.title}> </Text>
                 <View style={[styles.container, {marginBottom: 18}]}>
                     <Text style={styles.subtitle}> Repeat </Text>
                     <RadioButtons
@@ -275,7 +275,7 @@ export default class AddAvailabilityScreen extends Component {
                     />
                 </View>
 
-                <View style={styles.saveButtonContainer}>
+                <View style={[styles.saveButtonContainer]}>
                     <TouchableOpacity
                         style={Style.buttons.fixedBottom.touchable}
                         onPress={() => {
@@ -310,10 +310,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     title: {
-        fontSize: 24,
+        fontSize: 10,
         textAlign: 'center',
         margin: 10,
-        marginBottom: 20
+        marginBottom: 10
     },
     subtitle: {
         fontSize: 16,
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
         paddingBottom: 14,
     },
     saveButtonContainer: {
-        marginTop: 10,
+        marginTop: 20,
         width: '100%',
         bottom: 0,
         left: 0,

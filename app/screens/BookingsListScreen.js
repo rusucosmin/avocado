@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
+import moment from "moment/moment";
 
 export default class BookingsListScreen extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ export default class BookingsListScreen extends Component {
                 future_bookigns = [];
                 DATETIME_THRESHOLD_NOW = Date.now();
                 for(let bookingKey in data) {
-                    if(this.getTimeFromData(data[bookingKey].start_datetime) > DATETIME_THRESHOLD_NOW)
+                    if(this.getTimeFromData(data[bookingKey].end_datetime) > DATETIME_THRESHOLD_NOW)
                         future_bookigns.push(data[bookingKey]);
                 }
                 this.setState({bookingsDS: global.dsBookings.cloneWithRows(future_bookigns)})
@@ -55,11 +56,16 @@ export default class BookingsListScreen extends Component {
         return Date.parse(stringDatetime) - ROMANIAN_OFFSET;
     }
 
+    parseDatetime(datetime) {
+        return moment(datetime).format("YYYY-MM-DD HH:mm");
+    }
+
     componentDidMount() {
         Promise.all([this.loadData()]);
     }
 
     renderRow(record) {
+        console.log("Record: ", record);
         return (
             <View>
                 <TouchableOpacity onPress={() => {Alert.alert(record.park_spot.address)}}>
@@ -69,14 +75,15 @@ export default class BookingsListScreen extends Component {
                                 <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                             </View>
                             <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{record.start_datetime} to </Text>
-                                <Text style={styles.parkspotAddress}>{record.end_datetime} </Text>
+                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
+                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
                                 <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
+                                <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
                             </View>
                         </View>
                         <View style={styles.secondaryListView}>
                             <View style={styles.halfViewTopRight}>
-                                <Text style={styles.parkSpotPrice}>{record.user.phone} / hr</Text>
+                                <Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>
                                 <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
                             </View>
                             <View style={styles.halfViewBottomRight}>

@@ -72,11 +72,12 @@ export default class App extends Component {
                         />
                         <Scene
                             key="parkSpotsView"
+                            title={"Your Parking Spots"}
                             component={ParkSpotView}
                         />
                         <Scene
                             key="addParkSpotView"
-                            title="Add Park Spot"
+                            title="Add Parking Spot"
                             component={AddParkSpotScreen}
                         />
                         <Scene
@@ -91,12 +92,12 @@ export default class App extends Component {
                         <Scene
                             key="findParkSpotView"
                             hideNavBar
-                            title={"Search for a park spot"}
+                            title={"Search for a Parking Spot"}
                             component={FindParkSpotScreen}
                         />
                         <Scene
                             key="parkSpotDetailedView"
-                            title={"Park Spot details"}
+                            title={"Parking Spot Details"}
                             component={ParkSpotDetailedViewScreen}
                         />
                         <Scene
@@ -106,12 +107,12 @@ export default class App extends Component {
                         />
                         <Scene
                             key="fountParkSpotsView"
-                            title={"Available park spots"}
+                            title={"Available Parking Spots"}
                             component={FoundParkSpotsScreen}
                         />
                         <Scene
                             key="bookingsListScreen"
-                            title={"Spots booked"}
+                            title={"Booked Parking Spots"}
                             component={BookingsListScreen}
                         />
                         <Scene
@@ -126,17 +127,17 @@ export default class App extends Component {
                         />
                         <Scene
                             key="adminBookings"
-                            title="Touch booking to delete"
+                            title="Touch Booking to Delete"
                             component={AdminBookingsScreen}
                         />
                         <Scene
                             key="adminParkSpots"
-                            title="Touch park spot to delete"
+                            title="Touch Parking Spot to Delete"
                             component={AdminParkSpotsScreen}
                         />
                         <Scene
                             key="adminAvailability"
-                            title="Touch availability to delete"
+                            title="Touch Availability to Delete"
                             component={AdminAvailabilityScreen}
                         />
                         <Scene

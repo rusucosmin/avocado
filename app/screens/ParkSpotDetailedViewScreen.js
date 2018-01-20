@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     },
     availabilityButtonTouchable: {
         width: '100%',
-        backgroundColor: Style.general.color1,
+        backgroundColor: Style.general.color6,
         alignItems: 'center'
     },
     availabilityButtonText: {
