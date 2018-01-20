@@ -10,6 +10,11 @@ import * as Style from '../styles';
 class AdminParkSpotsScreen extends Component {
     constructor(props) {
         super(props);
+
+        this.empty_parking = {
+            name: "No parking spot found."
+        }
+
         this.state = {
             parkSpotDS: global.dsAdminParkSpots.cloneWithRows([])
         }
@@ -44,7 +49,7 @@ class AdminParkSpotsScreen extends Component {
                     .then((responseData) => {
                         console.log("List of park spots: ", responseData);
                         if (responseData.length == 0) {
-                            Alert.alert("Info", "You do not have any park spot yet. Touch the button to add park spot.");
+                            this.setState({parkSpotDS: global.dsAdminParkSpots.cloneWithRows([this.empty_parking])})
                         }
                         // dispatch(fetchingParkSpotsSave(responseData))
                         this.setState({parkSpotDS: global.dsAdminParkSpots.cloneWithRows(responseData)})
@@ -90,45 +95,57 @@ class AdminParkSpotsScreen extends Component {
     }
 
     renderRow(record) {
-        return (
-            <View>
-                <TouchableOpacity onPress={() => {
-                    Alert.alert("Confirmation",
-                        "Are you sure you want to delete this park spot?",
-                        [
-                            {
-                                text: "Yes", onPress: () => {
-                                    Promise.all(this.deleteParkSpot(record.id));
-                                }
-                            },
-                            {
-                                text: "No", onPress: () => {
-                                }
-                            }
-                        ],
-                        {cancelable: false});
-                }}>
+        if (record == this.empty_parking) {
+            return (
+                <View>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotName}>{record.name}</Text>
-                            </View>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{record.address}</Text>
-                            </View>
-                        </View>
-                        <View style={styles.secondaryListView}>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkSpotPrice}>{record.price_per_hour} / hr</Text>
-                            </View>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotSize}>{record.size}</Text>
-                            </View>
+                            <Text style={styles.parkspotName}>{record.name}</Text>
                         </View>
                     </View>
-                </TouchableOpacity>
-            </View>
-        );
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert("Confirmation",
+                            "Are you sure you want to delete this park spot?",
+                            [
+                                {
+                                    text: "Yes", onPress: () => {
+                                    Promise.all(this.deleteParkSpot(record.id));
+                                }
+                                },
+                                {
+                                    text: "No", onPress: () => {
+                                }
+                                }
+                            ],
+                            {cancelable: false});
+                    }}>
+                        <View style={styles.listElement}>
+                            <View style={styles.mainListView}>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotName}>{record.name}</Text>
+                                </View>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotAddress}>{record.address}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.secondaryListView}>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkSpotPrice}>{record.price_per_hour} / hr</Text>
+                                </View>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotSize}>{record.size}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
     }
 
     render() {

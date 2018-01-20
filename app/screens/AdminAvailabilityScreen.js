@@ -8,6 +8,9 @@ export default class AdminAvailabilityScreen extends Component {
     constructor(props) {
         super(props);
 
+        this.empty_availability = {
+            name: "No availability found."
+        }
 
         this.state = {
             availabilityDS: global.dsAdminAvailability.cloneWithRows([])
@@ -34,8 +37,7 @@ export default class AdminAvailabilityScreen extends Component {
             return response;
         }).then((data) => {
             if(data.length == 0){
-                Alert.alert("You have not made any availability yet!");
-                this.setState({availabilityDS: global.dsAdminAvailability.cloneWithRows([])})
+                this.setState({availabilityDS: global.dsAdminAvailability.cloneWithRows([this.empty_availability])})
             }
             else {
                 console.log("Availabilities: ", data);
@@ -81,39 +83,60 @@ export default class AdminAvailabilityScreen extends Component {
 
     renderRow(record) {
         console.log("record: ", record.park_spot);
-        return (
-            <View>
-                <TouchableOpacity onPress={() => {
-                    Alert.alert("Confirmation",
-                        "Are you sure you want to delete this availability?",
-                        [
-                            {text: "Yes", onPress: () => {Promise.all(this.deleteAvailability(record.id));}},
-                            {text: "No", onPress: () => {}}
-                        ],
-                        { cancelable: false });
-                }}>
-                    <View style={styles.listElement}>
-                        <View style={styles.mainListView}>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
-                            </View>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
-                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
-                                <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
+        if (record == this.empty_availability) {
+            return (
+                <View>
+                        <View style={styles.listElement}>
+                            <View style={styles.mainListView}>
+                                <Text style={styles.parkspotName}>{record.name}</Text>
                             </View>
                         </View>
-                        <View style={styles.secondaryListView}>
-                            <View style={styles.halfViewTopRight}>
-                                {/*<Text style={styles.parkspotSize}>{record.park_spot.size}</Text>*/}
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert("Confirmation",
+                            "Are you sure you want to delete this availability?",
+                            [
+                                {
+                                    text: "Yes", onPress: () => {
+                                    Promise.all(this.deleteAvailability(record.id));
+                                }
+                                },
+                                {
+                                    text: "No", onPress: () => {
+                                }
+                                }
+                            ],
+                            {cancelable: false});
+                    }}>
+                        <View style={styles.listElement}>
+                            <View style={styles.mainListView}>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
+                                </View>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)}
+                                        to </Text>
+                                    <Text
+                                        style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
+                                    <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
+                                </View>
                             </View>
-                            <View style={styles.halfViewBottomRight}>
+                            <View style={styles.secondaryListView}>
+                                <View style={styles.halfViewTopRight}>
+                                    {/*<Text style={styles.parkspotSize}>{record.park_spot.size}</Text>*/}
+                                </View>
+                                <View style={styles.halfViewBottomRight}>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </TouchableOpacity>
-            </View>
-        );
+                    </TouchableOpacity>
+                </View>
+            );
+        }
     }
 
     render() {
