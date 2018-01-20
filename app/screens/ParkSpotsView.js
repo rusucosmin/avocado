@@ -6,18 +6,22 @@ import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
 import * as Style from '../styles';
+import LoadingIndicator from "./LoadingIndicator";
 
 class ParkSpotsView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            parkSpotDS: global.ds.cloneWithRows([])
+            parkSpotDS: global.ds.cloneWithRows([]),
+            loading: false
         }
     }
 
     componentDidMount() {
         AsyncStorage.getItem("token")
             .then((token) => {
+                this.setState({loading: true});
+
                 return fetch("https://damp-refuge-96622.herokuapp.com/user/park_spots", {
                     method: "GET",
                     headers: {
@@ -43,6 +47,9 @@ class ParkSpotsView extends Component {
                         this.setState({parkSpotDS: global.ds.cloneWithRows(responseData)})
                     })
                     .catch((error) => {
+                    })
+                    .finally(() => {
+                        this.setState({loading: false})
                     })
             });
     }
@@ -75,19 +82,26 @@ class ParkSpotsView extends Component {
     }
 
     render() {
-        return (
-            <View style={{flex:1}}>
-                <ListView
-                    dataSource={this.state.parkSpotDS}
-                    renderRow={this.renderRow.bind(this)}
-                    enableEmptySections={true}
-                />
+        if (this.state.loading) {
+            console.log("Loading...");
+            return <LoadingIndicator/>
+        } else {
+            return (
+                <View style={{flex: 1}}>
+                    <ListView
+                        dataSource={this.state.parkSpotDS}
+                        renderRow={this.renderRow.bind(this)}
+                        enableEmptySections={true}
+                    />
 
-                <ActionButton buttonColor={Style.general.color5}
-                              onPress={() => {Actions.addParkSpotView();}}/>
+                    <ActionButton buttonColor={Style.general.color5}
+                                  onPress={() => {
+                                      Actions.addParkSpotView();
+                                  }}/>
 
-            </View>
-        );
+                </View>
+            );
+        }
     }
 }
 

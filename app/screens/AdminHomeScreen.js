@@ -3,6 +3,8 @@ import {Actions} from 'react-native-router-flux';
 import {connect} from 'redux';
 import {View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage, Image, StatusBar} from 'react-native'
 import * as Style from '../styles';
+import LoadingIndicator from "./LoadingIndicator";
+import RippleLoader from "react-native-indicator/lib/loader/RippleLoader";
 
 
 export default class AdminHomeScreen extends Component {
@@ -10,7 +12,8 @@ export default class AdminHomeScreen extends Component {
         super(props);
 
         this.state = {
-            username: this.extractUserFromEmail(this.props.user.email)
+            username: this.extractUserFromEmail(this.props.user.email),
+            loading: false
         }
     }
 
@@ -38,23 +41,7 @@ export default class AdminHomeScreen extends Component {
     }
 
     async seeUserProfile() {
-        let token = await AsyncStorage.getItem("token");
-
-        return fetch("https://damp-refuge-96622.herokuapp.com/user", {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " + token
-            },
-        }).then((response) => {
-            if (response.status == 200) {
-                return response.json();
-            }
-            return response;
-        }).then((user) => {
-            Actions.userProfile({user: user});
-        });
+        Actions.userProfile({user: this.props.user});
     }
 
     render() {
@@ -124,11 +111,9 @@ export default class AdminHomeScreen extends Component {
                                 source={require('../img/profile.png')}
                                 style={styles.iconImage}/>
                         </TouchableOpacity>
-
                     </View>
                 </View>
             </View>
-
         )
     }
 }

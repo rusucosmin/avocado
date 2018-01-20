@@ -6,18 +6,24 @@ import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
 import moment from "moment/moment";
+import LoadingIndicator from "./LoadingIndicator";
 
 export default class BookingsListScreen extends Component {
     constructor(props) {
         super(props);
 
+        this.empty_booking = {
+            name: "No booking found."
+        };
 
         this.state = {
-            bookingsDS: global.dsBookings.cloneWithRows([])
+            bookingsDS: global.dsBookings.cloneWithRows([]),
+            loading: false
         }
     }
 
     async loadData() {
+        this.setState({loading: true});
         let token = await AsyncStorage.getItem("token");
         return fetch("https://damp-refuge-96622.herokuapp.com/history", {
             method: "GET",
@@ -27,27 +33,32 @@ export default class BookingsListScreen extends Component {
                 'Authorization': "Bearer " + token
             }
         }).then((response) => {
-            if(response.status == 200){
+            if (response.status == 200) {
                 return response.json();
             }
             return response;
         }).then((data) => {
-            if(data.length == 0){
-                Alert.alert("You have not made any bookings yet!");
-                this.setState({bookingsDS: global.dsBookings.cloneWithRows([])})
+            if (data.length == 0) {
+                this.setState({bookingsDS: global.dsBookings.cloneWithRows([this.empty_booking])})
             }
             else {
                 future_bookigns = [];
                 DATETIME_THRESHOLD_NOW = Date.now();
-                for(let bookingKey in data) {
-                    if(this.getTimeFromData(data[bookingKey].end_datetime) > DATETIME_THRESHOLD_NOW)
+                for (let bookingKey in data) {
+                    if (this.getTimeFromData(data[bookingKey].end_datetime) > DATETIME_THRESHOLD_NOW)
                         future_bookigns.push(data[bookingKey]);
                 }
-                this.setState({bookingsDS: global.dsBookings.cloneWithRows(future_bookigns)})
+                if (future_bookigns.length == 0) {
+                    this.setState({bookingsDS: global.dsBookings.cloneWithRows([this.empty_booking])})
+                } else {
+                    this.setState({bookingsDS: global.dsBookings.cloneWithRows(future_bookigns)})
+                }
             }
         }).catch((error) => {
             console.log("Find park spot error: ", error);
             return error;
+        }).finally(() => {
+            this.setState({loading: false});
         });
     }
 
@@ -66,45 +77,66 @@ export default class BookingsListScreen extends Component {
 
     renderRow(record) {
         console.log("Record: ", record);
-        return (
-            <View>
-                <TouchableOpacity onPress={() => {Alert.alert(record.park_spot.address)}}>
+        if (record == this.empty_booking) {
+            return (
+                <View>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
-                            </View>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
-                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
-                                <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
-                                <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
-                            </View>
-                        </View>
-                        <View style={styles.secondaryListView}>
-                            <View style={styles.halfViewTopRight}>
-                                <Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>
-                                <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
-                            </View>
-                            <View style={styles.halfViewBottomRight}>
-                            </View>
+                            <Text style={styles.parkspotName}>{record.name}</Text>
                         </View>
                     </View>
-                </TouchableOpacity>
-            </View>
-        );
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert(record.park_spot.address)
+                    }}>
+                        <View style={styles.listElement}>
+                            <View style={styles.mainListView}>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
+                                </View>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)}
+                                        to </Text>
+                                    <Text
+                                        style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
+                                    <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
+                                    <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.secondaryListView}>
+                                <View style={styles.halfViewTopRight}>
+                                    <Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>
+                                    <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
+                                </View>
+                                <View style={styles.halfViewBottomRight}>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
     }
 
     render() {
-        return (
-            <View>
-                <ListView
-                    dataSource={this.state.bookingsDS}
-                    renderRow={this.renderRow.bind(this)}
-                    enableEmptySections={true}
-                />
-            </View>
-        );
+        if (this.state.loading) {
+            console.log("Loading...");
+            return <LoadingIndicator/>
+        } else {
+            return (
+                <View>
+                    <ListView
+                        dataSource={this.state.bookingsDS}
+                        renderRow={this.renderRow.bind(this)}
+                        enableEmptySections={true}
+                    />
+                </View>
+            );
+        }
     }
 }
 

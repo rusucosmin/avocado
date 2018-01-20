@@ -4,11 +4,16 @@ import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {signUp as signUpAction} from '../actions/users';
 import * as Style from '../styles';
+import LoadingIndicator from "./LoadingIndicator";
 
 class SignUpScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = {email: '', password: ''};
+        this.state = {
+            email: '',
+            password: '',
+            loading: false
+        };
     }
 
     signUp() {
@@ -27,14 +32,17 @@ class SignUpScreen extends Component {
             return;
         }
 
+        this.setState({loading: true});
         this.props.signUp(this.state.email, this.state.password)
             .then((response) => {
-                if(response === true) {
+                if (response === true) {
                     Alert.alert("User successfully created.");
+                    this.setState({loading: false});
                     Actions.signInView();
                 }
                 else {
                     Alert.alert("User could not be created.");
+                    this.setState({loading: false});
                 }
             });
     }
@@ -63,15 +71,15 @@ class SignUpScreen extends Component {
                 <View style={styles.titleBox}>
                     <Image
                         source={require('../img/signup_gradient.png')}
-                        style={[styles.imageContainer,styles.backgroundImage]}
+                        style={[styles.imageContainer, styles.backgroundImage]}
                     >
-                    <Text style={styles.title}>
-                        Create new account
-                    </Text>
-                    <Image
-                        source={require('../img/signup2.png')}
-                        style={styles.logo}
-                    />
+                        <Text style={styles.title}>
+                            Create new account
+                        </Text>
+                        <Image
+                            source={require('../img/signup2.png')}
+                            style={styles.logo}
+                        />
                     </Image>
 
                 </View>
@@ -96,16 +104,21 @@ class SignUpScreen extends Component {
                         secureTextEntry={true}
                         style={styles.inputPassword}
                     />
-                    <TouchableOpacity
-                        style={styles.buttonSignIn}
-                        onPress={() => {
-                            this.signUp()
-                        }}
-                    >
-                        <Text style={{color: '#fff', fontSize: 18}}>
-                            Sign up
-                        </Text>
-                    </TouchableOpacity>
+                    {   !this.state.loading &&
+                        <TouchableOpacity
+                            style={styles.buttonSignIn}
+                            onPress={() => {
+                                this.signUp()
+                            }}
+                        >
+                            <Text style={{color: '#fff', fontSize: 18}}>
+                                Sign up
+                            </Text>
+                        </TouchableOpacity>
+                    }
+                    {   this.state.loading &&
+                        <LoadingIndicator/>
+                    }
                 </View>
             </View>
         )

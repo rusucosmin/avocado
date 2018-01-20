@@ -5,18 +5,24 @@ import {connect} from 'react-redux';
 import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
+import LoadingIndicator from "./LoadingIndicator";
 
 export default class BookingsListScreen extends Component {
     constructor(props) {
         super(props);
 
+        this.empty_bookings = {
+            name: "No bookings found."
+        };
 
         this.state = {
-            bookingsDS: global.dsAdminBookings.cloneWithRows([])
+            bookingsDS: global.dsAdminBookings.cloneWithRows([]),
+            loading: false
         }
     }
 
     async loadData() {
+        this.setState({loading: true});
         let token = await AsyncStorage.getItem("token");
         return fetch("https://damp-refuge-96622.herokuapp.com/admin/bookings", {
             method: "GET",
@@ -26,14 +32,13 @@ export default class BookingsListScreen extends Component {
                 'Authorization': "Bearer " + token
             }
         }).then((response) => {
-            if(response.status == 200){
+            if (response.status == 200) {
                 return response.json();
             }
             return response;
         }).then((data) => {
-            if(data.length == 0){
-                Alert.alert("You have not made any bookings yet!");
-                this.setState({bookingsDS: global.dsAdminBookings.cloneWithRows([])})
+            if (data.length == 0) {
+                this.setState({bookingsDS: global.dsAdminBookings.cloneWithRows([this.empty_bookings])})
             }
             else {
                 this.setState({bookingsDS: global.dsAdminBookings.cloneWithRows(data)})
@@ -41,13 +46,15 @@ export default class BookingsListScreen extends Component {
         }).catch((error) => {
             console.log("Find park spot error: ", error);
             return error;
+        }).finally(() => {
+            this.setState({loading: false});
         });
     }
 
     async deleteBooking(bookingId) {
         let token = await AsyncStorage.getItem("token");
 
-        return fetch("https://damp-refuge-96622.herokuapp.com/bookings/" + bookingId.toString(),{
+        return fetch("https://damp-refuge-96622.herokuapp.com/bookings/" + bookingId.toString(), {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
@@ -55,19 +62,27 @@ export default class BookingsListScreen extends Component {
                 'Authorization': "Bearer " + token
             }
         }).then((response) => {
-            if(response.status == 204) {
+            if (response.status == 204) {
                 Promise.all(this.loadData());
                 Alert.alert(
                     "Result",
                     "Booking was successfully deleted",
                     [
-                    {text: "Ok", onPress: () => {this.loadData();}},
-                        {text: "Go back", onPress: () => {Actions.pop();}}
+                        {
+                            text: "Ok", onPress: () => {
+                                this.loadData();
+                            }
+                        },
+                        {
+                            text: "Go back", onPress: () => {
+                                Actions.pop();
+                            }
+                        }
                     ]
                 )
             }
-            else{
-                Alert.alert("Result","Booking was not deleted!");
+            else {
+                Alert.alert("Result", "Booking was not deleted!");
             }
         });
     }
@@ -77,54 +92,78 @@ export default class BookingsListScreen extends Component {
     }
 
     renderRow(record) {
-        console.log("Admin record: ", record);
-        return (
-            <View>
-                <TouchableOpacity onPress={() => {
-                    Alert.alert("Confirmation",
-                        "Are you sure you want to delete this booking?",
-                        [
-                            {text: "Yes", onPress: () => {Promise.all(this.deleteBooking(record.id));}},
-                            {text: "No", onPress: () => {}}
-                        ],
-                        { cancelable: false });
-                }}>
+        if (record == this.empty_bookings) {
+            return (
+                <View>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
-                            </View>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{record.start_datetime} to </Text>
-                                <Text style={styles.parkspotAddress}>{record.end_datetime} </Text>
-                                <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
-                                <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
-                            </View>
-                        </View>
-                        <View style={styles.secondaryListView}>
-                            <View style={styles.halfViewTopRight}>
-                                <Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>
-                                <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
-                            </View>
-                            <View style={styles.halfViewBottomRight}>
-                            </View>
+                            <Text style={styles.parkspotName}>{record.name}</Text>
                         </View>
                     </View>
-                </TouchableOpacity>
-            </View>
-        );
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert("Confirmation",
+                            "Are you sure you want to delete this booking?",
+                            [
+                                {
+                                    text: "Yes", onPress: () => {
+                                        Promise.all(this.deleteBooking(record.id));
+                                    }
+                                },
+                                {
+                                    text: "No", onPress: () => {
+                                    }
+                                }
+                            ],
+                            {cancelable: false});
+                    }}>
+                        <View style={styles.listElement}>
+                            <View style={styles.mainListView}>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
+                                </View>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotAddress}>{record.start_datetime} to </Text>
+                                    <Text style={styles.parkspotAddress}>{record.end_datetime} </Text>
+                                    <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
+                                    <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.secondaryListView}>
+                                <View style={styles.halfViewTopRight}>
+                                    <Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>
+                                    <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
+                                </View>
+                                <View style={styles.halfViewBottomRight}>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
     }
 
+
     render() {
-        return (
-            <View>
-                <ListView
-                    dataSource={this.state.bookingsDS}
-                    renderRow={this.renderRow.bind(this)}
-                    enableEmptySections={true}
-                />
-            </View>
-        );
+        if (this.state.loading) {
+            console.log("Loading...");
+            return <LoadingIndicator/>
+        } else {
+            return (
+                <View>
+                    <ListView
+                        dataSource={this.state.bookingsDS}
+                        renderRow={this.renderRow.bind(this)}
+                        enableEmptySections={true}
+                    />
+                </View>
+            );
+        }
     }
 }
 

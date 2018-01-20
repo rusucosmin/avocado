@@ -100,7 +100,7 @@ export default class FindParkSpotScreen extends Component {
         let startTimestamp = this.parseDatetimeTimestamp(this.state.startDatetime);
         let endTimestamp = this.parseDatetimeTimestamp(datetime);
         if (endTimestamp < startTimestamp) {
-            Alert.alert("Oops", "End datetime must be < Start datetime");
+            Alert.alert("Oops", "Start datetime must be < End datetime");
         } else {
             this.setState({
                 endDatetime: this.parseDatetime(datetime)

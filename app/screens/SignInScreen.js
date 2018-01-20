@@ -12,7 +12,8 @@ class LoginScreen extends Component {
         this.state = {
             email: '',
             password: '',
-            loading: true
+            loading_local_sign_in: false,
+            loading_normal_sign_in: false
         };
     }
 
@@ -21,6 +22,8 @@ class LoginScreen extends Component {
     }
 
     async isSignedIn() {
+        this.setState({loading_local_sign_in: true});
+
         // TODO: save to store the credentials from async storage when you sign in
         let email, token;
         await AsyncStorage.getItem("email")
@@ -41,10 +44,9 @@ class LoginScreen extends Component {
                         fetching: false
                     };
                     return this.verifyUserRole(token)
+                } else {
+                    this.setState({loading_local_sign_in: false})
                 }
-            })
-            .then(() => {
-                this.setState({loading: false})
             })
     }
 
@@ -64,6 +66,8 @@ class LoginScreen extends Component {
         }).then((user) => {
             AsyncStorage.setItem("email", this.props.user.email);
             AsyncStorage.setItem("token", token);
+            this.setState({loading_local_sign_in: false, loading_normal_sign_in:false});
+
             if (user.role == 'admin')
                 Actions.reset("adminHome", {user: user});
             else
@@ -75,6 +79,7 @@ class LoginScreen extends Component {
 
     signIn() {
         // Here make request to server to verify if user exists
+        this.setState({loading_normal_sign_in: true});
         this.props.signIn(this.state.email, this.state.password)
             .then(() => {
                 const token = this.props.user.token;
@@ -82,6 +87,7 @@ class LoginScreen extends Component {
                     // Get user data
                     this.verifyUserRole(token);
                 } else {
+                    this.setState({loading: false});
                     Alert.alert("Ooops", "No user with this data.");
                 }
             })
@@ -92,7 +98,7 @@ class LoginScreen extends Component {
     }
 
     render() {
-        if (this.state.loading) {
+        if (this.state.loading_local_sign_in) {
             return <LoadingIndicator/>
         } else {
             return (
@@ -137,6 +143,7 @@ class LoginScreen extends Component {
                             secureTextEntry={true}
                             style={styles.inputPassword}
                         />
+                        {!this.state.loading_normal_sign_in &&
                         <TouchableOpacity
                             style={styles.buttonSignIn}
                             onPress={() => {
@@ -147,6 +154,10 @@ class LoginScreen extends Component {
                                 Sign in
                             </Text>
                         </TouchableOpacity>
+                        }
+                        {this.state.loading_normal_sign_in &&
+                        <LoadingIndicator/>
+                        }
                         <Text style={{marginTop: 12, fontSize: 14, color: "#b6b6b4"}}>
                             <Text> Don't have an account? </Text>
                             <Text style={{fontWeight: 'bold'}}

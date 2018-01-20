@@ -6,7 +6,8 @@ import ActionButton from "react-native-action-button";
 export default class FoundParkSpotsScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+        }
     }
 
     componentDidUpdate() {
@@ -155,22 +156,6 @@ export default class FoundParkSpotsScreen extends Component {
                     renderRow={this.renderRow.bind(this)}
                     enableEmptySections={true}
                 />
-
-                {/*<ActionButton*/}
-                    {/*title="Book spot"*/}
-                    {/*buttonColor="rgba(236,76,60,1)"*/}
-                    {/*onPress={() => {*/}
-                        {/*this.bookParkSpot()*/}
-                    {/*}}>*/}
-                    {/*<ActionButton.Item*/}
-                        {/*title="See spot"*/}
-                        {/*buttonColor="#1abc9c"*/}
-                        {/*onPress={() => {*/}
-
-                        {/*}}*/}
-                    {/*/>*/}
-
-                {/*</ActionButton>*/}
             </View>
         );
     }

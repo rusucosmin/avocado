@@ -3,6 +3,7 @@ import {Actions} from 'react-native-router-flux';
 import {connect} from 'redux';
 import {View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage, Image, StatusBar} from 'react-native'
 import * as Style from '../styles';
+import RippleLoader from "react-native-indicator/lib/loader/RippleLoader";
 
 
 export default class HomeScreen extends Component {
@@ -10,7 +11,8 @@ export default class HomeScreen extends Component {
         super(props);
 
         this.state = {
-            username: this.extractUserFromEmail(this.props.user.email)
+            username: this.extractUserFromEmail(this.props.user.email),
+            loading: false
         }
     }
 
@@ -38,7 +40,6 @@ export default class HomeScreen extends Component {
     }
 
     async seeUserProfile() {
-        console.log("User: ", this.props.user);
         Actions.userProfile({user: this.props.user})
     }
 
@@ -110,16 +111,24 @@ export default class HomeScreen extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={[styles.screenWidth]}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.seeUserProfile()
-                            }}
-                        >
-                            <Image
-                                source={require('../img/profile.png')}
-                                style={styles.iconImage}/>
-                        </TouchableOpacity>
-
+                        {
+                            this.state.loading &&
+                            <RippleLoader
+                                color={"#fff"}
+                            />
+                        }
+                        {
+                            !this.state.loading &&
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.seeUserProfile()
+                                }}
+                            >
+                                <Image
+                                    source={require('../img/profile.png')}
+                                    style={styles.iconImage}/>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
             </View>
