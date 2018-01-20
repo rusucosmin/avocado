@@ -19,8 +19,6 @@ export default class ParkSpotDetailedViewScreen extends Component {
     }
 
     componentDidMount() {
-        FormManager.reset("formDe");
-
     }
 
     componentDidUpdate() {
@@ -28,7 +26,6 @@ export default class ParkSpotDetailedViewScreen extends Component {
     }
 
     componentWillReceiveProps() {
-        console.log("Form props: ", this.props);
     }
 
     updateLocationTitle() {
@@ -71,12 +68,10 @@ export default class ParkSpotDetailedViewScreen extends Component {
 
     async saveParkingSpot() {
         // Wait for credentials from async storage
-        // TODO: use redux for that
+        console.log("Updating park spot.");
         let email = await AsyncStorage.getItem("email");
         let token = await AsyncStorage.getItem("token");
 
-        //TODO: integrate into redux flow
-        console.log("Add spot for user: ", email);
 
         return fetch("https://damp-refuge-96622.herokuapp.com/park_spot/" + this.state.park_spot.id, {
             method: "PUT",
@@ -93,6 +88,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
             if (response.status !== 200) {
                 //Do something with the data
             }
+            Actions.pop();
             return response;
         }).catch((error) => {
             console.log("Add park spot error: ", error);
@@ -101,18 +97,18 @@ export default class ParkSpotDetailedViewScreen extends Component {
     }
 
     prepareParkSpotForRequest() {
-        let name = FormManager.getValue("formDe", "name");
-        let address = FormManager.getValue("formDe", "address");
+        let name = FormManager.getValue("formParkSpotDetail", "name");
+        let address = FormManager.getValue("formParkSpotDetail", "address");
         let latitude = this.state.park_spot.latitude;
         let longitude = this.state.park_spot.longitude;
-        let price_per_hour = FormManager.getValue("formDe", "price");
-        let size = FormManager.getValue("formDe", "size");
+        let price_per_hour = FormManager.getValue("formParkSpotDetail", "price");
+        let size = FormManager.getValue("formParkSpotDetail", "size");
         const sizes = ["small", "medium", "large"];
         let sizeBefore = this.state.park_spot.size;
         size = sizes[size - 1];
         if (size == null)
             size = sizeBefore
-        let description = FormManager.getValue("formDe", "description");
+        let description = FormManager.getValue("formParkSpotDetail", "description");
 
         return {
             name, address, latitude, longitude, price_per_hour, size, description
@@ -124,7 +120,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
         return (
             <View style={{flex: 1}}>
                 <Form
-                    formName="formDe"
+                    formName="formParkSpotDetail"
                     defaults={{}}
                     openModal={(route) => {
                         Actions.formModalView({
@@ -208,7 +204,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
                                     try {
                                         if (response.status === 200) {
                                             // If add successful => close view
-                                            Actions.pop();
+                                            this.props.refreshParkSpots();
                                         }
                                     } catch (error) {
                                     }

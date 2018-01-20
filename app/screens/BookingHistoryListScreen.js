@@ -10,7 +10,7 @@ export default class BookingHistoryListScreen extends Component {
         super(props);
 
         this.empty_history = {
-            name: "No booking found."
+            name: "No bookings found."
         }
 
         this.state = {
@@ -30,7 +30,7 @@ export default class BookingHistoryListScreen extends Component {
                 'Authorization': "Bearer " + token
             }
         }).then((response) => {
-            if(response.status == 200){
+            if (response.status == 200) {
                 return response.json();
             }
             return response;
@@ -85,33 +85,29 @@ export default class BookingHistoryListScreen extends Component {
         } else {
             return (
                 <View>
-                    <TouchableOpacity onPress={() => {
-                        Alert.alert(record.park_spot.address)
-                    }}>
-                        <View style={styles.listElement}>
-                            <View style={styles.mainListView}>
-                                <View style={styles.halfView}>
-                                    <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
-                                </View>
-                                <View style={styles.halfView}>
-                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)}
-                                        to </Text>
-                                    <Text
-                                        style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
-                                    <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
-                                    <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
-                                </View>
+                    <View style={styles.listElement}>
+                        <View style={styles.mainListView}>
+                            <View style={styles.halfView}>
+                                <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                             </View>
-                            <View style={styles.secondaryListView}>
-                                <View style={styles.halfViewTopRight}>
-                                    {/*<Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>*/}
-                                    <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
-                                </View>
-                                <View style={styles.halfViewBottomRight}>
-                                </View>
+                            <View style={styles.halfView}>
+                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)}
+                                    to </Text>
+                                <Text
+                                    style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
+                                <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
+                                <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
                             </View>
                         </View>
-                    </TouchableOpacity>
+                        <View style={styles.secondaryListView}>
+                            <View style={styles.halfViewTopRight}>
+                                {/*<Text style={styles.parkSpotPrice}>{record.park_spot.price_per_hour} / hr</Text>*/}
+                                <Text style={styles.parkspotSize}>{record.park_spot.size}</Text>
+                            </View>
+                            <View style={styles.halfViewBottomRight}>
+                            </View>
+                        </View>
+                    </View>
                 </View>
             );
         }

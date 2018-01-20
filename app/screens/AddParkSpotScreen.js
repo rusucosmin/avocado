@@ -26,8 +26,9 @@ class AddParkSpotScreen extends Component {
 
     }
 
+
     componentDidMount() {
-        FormManager.reset("formAddParkSpot");
+
     }
 
     componentDidUpdate() {
@@ -36,6 +37,22 @@ class AddParkSpotScreen extends Component {
 
     componentWillReceiveProps() {
         console.log("Form props: ", this.props);
+    }
+
+
+    resetStateData() {
+        this.setState({
+            parkspot: {
+                name: "",
+                    address: "",
+                    latitude: 0,
+                    longitude: 0,
+                    price: 0,
+                    size: 0,
+                    description: ""
+            },
+            locationTitle: "Location             your current location"
+        })
     }
 
     updateLocationTitle() {
@@ -123,7 +140,6 @@ class AddParkSpotScreen extends Component {
         return {
             name, address, latitude, longitude, price_per_hour, size, description
         }
-
     }
 
     render() {
@@ -148,7 +164,6 @@ class AddParkSpotScreen extends Component {
                         name='name' // mandatory
                         title='Name'
                         placeholder='Identification name of the spot'
-                        value={this.state.name}
                         clearButtonMode='while-editing'
                         underlineColorAndroid='transparent'
                         widgetStyles = {{
@@ -160,7 +175,6 @@ class AddParkSpotScreen extends Component {
                         name='address' // mandatory
                         title='Address'
                         placeholder='Park spot address'
-                        value={this.state.address}
                         clearButtonMode='while-editing'
                         underlineColorAndroid='transparent'
                     />
@@ -209,6 +223,8 @@ class AddParkSpotScreen extends Component {
                                         if(response.status === 200) {
                                             // If add successful => close view
                                             this.props.refreshParkSpots();
+                                            this.resetStateData();
+                                            FormManager.reset("formAddParkSpot");
                                             Actions.pop();
                                         }
                                     } catch (error) {}

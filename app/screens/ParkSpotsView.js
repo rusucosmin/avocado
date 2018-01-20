@@ -18,49 +18,14 @@ class ParkSpotsView extends Component {
     }
 
     componentDidMount() {
-        this.fetchData();
-    }
-
-    fetchData() {
-        AsyncStorage.getItem("token")
-            .then((token) => {
-                this.setState({loading: true});
-
-                return fetch("https://damp-refuge-96622.herokuapp.com/user/park_spots", {
-                    method: "GET",
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then((response) => {
-                        console.log("Sign in response: ", response);
-                        if (response.status == 200) {
-                            // dispatch(fetchingParkSpotsSuccess());
-                            console.log("Park spots fetched");
-                            return response.json();
-                        }
-                        else {
-                            dispatch(fetchingParkSpotsFail())
-                        }
-                    })
-                    .then((responseData) => {
-                        console.log("List of park spots: ", responseData);
-                        this.setState({parkSpotDS: global.ds.cloneWithRows(responseData)})
-                    })
-                    .catch((error) => {
-                    })
-                    .finally(() => {
-                        this.setState({loading: false})
-                    })
-            });
+        this.fetchData()
     }
 
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => Actions.parkSpotDetailedView({park_spot: record, refreshParkSpots: () => {this.fetchData()}})}>
+                <TouchableOpacity onPress={() =>
+                    Actions.parkSpotDetailedView({park_spot: record, refreshParkSpots: () => {this.fetchData()}})}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>
@@ -86,7 +51,6 @@ class ParkSpotsView extends Component {
 
     render() {
         if (this.state.loading) {
-            console.log("Loading...");
             return <LoadingIndicator/>
         } else {
             return (
@@ -105,6 +69,42 @@ class ParkSpotsView extends Component {
                 </View>
             );
         }
+    }
+
+    fetchData() {
+        this.setState({loading: true});
+        AsyncStorage.getItem("token")
+            .then((token) => {
+                return fetch("https://damp-refuge-96622.herokuapp.com/user/park_spots", {
+                    method: "GET",
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        console.log("Sign in response: ", response);
+                        if (response.status == 200) {
+                            // dispatch(fetchingParkSpotsSuccess());
+                            console.log("Park spots fetched");
+                            return response.json();
+                        }
+                        else {
+                            dispatch(fetchingParkSpotsFail())
+                        }
+                    })
+                    .then((responseData) => {
+                        console.log("List of park spots: ", responseData);
+                        // dispatch(fetchingParkSpotsSave(responseData))
+                        this.setState({parkSpotDS: global.ds.cloneWithRows(responseData)})
+                    })
+                    .catch((error) => {
+                    })
+                    .finally(() => {
+                        this.setState({loading: false});
+                    })
+            });
     }
 }
 

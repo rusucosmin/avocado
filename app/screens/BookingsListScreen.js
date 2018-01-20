@@ -75,6 +75,42 @@ export default class BookingsListScreen extends Component {
         Promise.all([this.loadData()]);
     }
 
+    async deleteBooking(bookingId) {
+        let token = await AsyncStorage.getItem("token");
+
+        return fetch("https://damp-refuge-96622.herokuapp.com/bookings/" + bookingId.toString(), {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            }
+        }).then((response) => {
+            if (response.status == 204) {
+                Promise.all(this.loadData());
+                Alert.alert(
+                    "Result",
+                    "Booking was successfully deleted",
+                    [
+                        {
+                            text: "Ok", onPress: () => {
+                                this.loadData();
+                            }
+                        },
+                        {
+                            text: "Go back", onPress: () => {
+                                Actions.pop();
+                            }
+                        }
+                    ]
+                )
+            }
+            else {
+                Alert.alert("Result", "Booking was not deleted!");
+            }
+        });
+    }
+
     renderRow(record) {
         console.log("Record: ", record);
         if (record == this.empty_booking) {
@@ -91,7 +127,20 @@ export default class BookingsListScreen extends Component {
             return (
                 <View>
                     <TouchableOpacity onPress={() => {
-                        Alert.alert(record.park_spot.address)
+                        Alert.alert("Confirmation",
+                            "Are you sure you want to delete this booking?",
+                            [
+                                {
+                                    text: "Yes", onPress: () => {
+                                        Promise.all(this.deleteBooking(record.id));
+                                    }
+                                },
+                                {
+                                    text: "No", onPress: () => {
+                                    }
+                                }
+                            ],
+                            {cancelable: false});
                     }}>
                         <View style={styles.listElement}>
                             <View style={styles.mainListView}>
@@ -99,8 +148,7 @@ export default class BookingsListScreen extends Component {
                                     <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                                 </View>
                                 <View style={styles.halfView}>
-                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)}
-                                        to </Text>
+                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
                                     <Text
                                         style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
                                     <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>

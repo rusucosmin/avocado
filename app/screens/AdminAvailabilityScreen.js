@@ -75,16 +75,8 @@ export default class AdminAvailabilityScreen extends Component {
                     "Result",
                     "Availability was successfully deleted",
                     [
-                        {
-                            text: "Ok", onPress: () => {
-                                this.loadData();
-                            }
-                        },
-                        {
-                            text: "Go back", onPress: () => {
-                                Actions.pop();
-                            }
-                        }
+                        {text: "Ok", onPress: () => {this.loadData();}},
+                        {text: "Go back", onPress: () => {Actions.pop();}}
                     ]
                 )
             }
@@ -131,8 +123,7 @@ export default class AdminAvailabilityScreen extends Component {
                                     <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                                 </View>
                                 <View style={styles.halfView}>
-                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)}
-                                        to </Text>
+                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
                                     <Text
                                         style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
                                     <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
@@ -140,7 +131,7 @@ export default class AdminAvailabilityScreen extends Component {
                             </View>
                             <View style={styles.secondaryListView}>
                                 <View style={styles.halfViewTopRight}>
-                                    {/*<Text style={styles.parkspotSize}>{record.park_spot.size}</Text>*/}
+                                    {/*<Text style={styles.parkspotSize}>{record.user.name}</Text>*/}
                                 </View>
                                 <View style={styles.halfViewBottomRight}>
                                 </View>

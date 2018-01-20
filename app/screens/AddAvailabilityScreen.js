@@ -176,6 +176,7 @@ export default class AddAvailabilityScreen extends Component {
             if (response.status !== 200) {
                 let data = await response.json();
                 console.log("Data: ", data);
+                Actions.pop()
             }
             return response;
         }).catch((error) => {
