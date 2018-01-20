@@ -44,6 +44,8 @@ export default class UserProfileScreen extends Component {
                 user: this.prepareUserData()
             })
         });
+
+        // TODO save locally
     }
 
     render() {
@@ -104,6 +106,7 @@ export default class UserProfileScreen extends Component {
                                     try {
                                         if (response.status === 200) {
                                             // If add successful => close view
+                                            this.props.refreshUser()
                                             Actions.pop();
                                         }
                                     } catch (error) {

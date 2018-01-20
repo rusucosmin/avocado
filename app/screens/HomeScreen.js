@@ -10,7 +10,8 @@ export default class HomeScreen extends Component {
         super(props);
 
         this.state = {
-            username: this.extractUserFromEmail(this.props.user.email)
+            username: this.extractUserFromEmail(this.props.user.email),
+            userProfileUpdate: ""
         }
     }
 
@@ -38,8 +39,35 @@ export default class HomeScreen extends Component {
     }
 
     async seeUserProfile() {
-        console.log("User: ", this.props.user);
-        Actions.userProfile({user: this.props.user})
+        let token = await AsyncStorage.getItem("token");
+        if (this.state.userProfileUpdate == "") {
+            Actions.userProfile({user: this.props.user, refreshUser: () => {this.fetchUser(token)}})
+        } else {
+            Actions.userProfile({
+                user: this.state.userProfileUpdate, refreshUser: () => {
+                    this.fetchUser(token)
+                }
+            })
+        }
+
+    }
+
+    fetchUser(token) {
+        fetch("https://damp-refuge-96622.herokuapp.com/user",{
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            },
+        }).then((response) => {
+            if(response.status == 200){
+                return response.json();
+            }
+            return response;
+        }).then((user) => {
+            this.setState({userProfileUpdate: user})
+        });
     }
 
     render() {
