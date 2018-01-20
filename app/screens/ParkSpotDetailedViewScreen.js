@@ -18,6 +18,11 @@ export default class ParkSpotDetailedViewScreen extends Component {
 
     }
 
+    componentDidMount() {
+        FormManager.reset("formParkSpotDetail");
+
+    }
+
     componentDidUpdate() {
         this.updateLocationTitle();
     }
@@ -96,18 +101,18 @@ export default class ParkSpotDetailedViewScreen extends Component {
     }
 
     prepareParkSpotForRequest() {
-        let name = FormManager.getValue("form", "name");
-        let address = FormManager.getValue("form", "address");
+        let name = FormManager.getValue("formParkSpotDetail", "name");
+        let address = FormManager.getValue("formParkSpotDetail", "address");
         let latitude = this.state.park_spot.latitude;
         let longitude = this.state.park_spot.longitude;
-        let price_per_hour = FormManager.getValue("form", "price");
-        let size = FormManager.getValue("form", "size");
+        let price_per_hour = FormManager.getValue("formParkSpotDetail", "price");
+        let size = FormManager.getValue("formParkSpotDetail", "size");
         const sizes = ["small", "medium", "large"];
         let sizeBefore = this.state.park_spot.size;
         size = sizes[size - 1];
         if (size == null)
             size = sizeBefore
-        let description = FormManager.getValue("form", "description");
+        let description = FormManager.getValue("formParkSpotDetail", "description");
 
         return {
             name, address, latitude, longitude, price_per_hour, size, description
@@ -119,7 +124,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
         return (
             <View style={{flex: 1}}>
                 <Form
-                    formName="form"
+                    formName="formParkSpotDetail"
                     defaults={{}}
                     openModal={(route) => {
                         Actions.formModalView({
@@ -193,8 +198,6 @@ export default class ParkSpotDetailedViewScreen extends Component {
                         </Text>
                     </TouchableOpacity>
                 </Form>
-
-
 
                 <View style={styles.saveButtonContainer}>
                     <TouchableOpacity

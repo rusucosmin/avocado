@@ -20,8 +20,8 @@ export default class UserProfileScreen extends Component {
 
     prepareUserData() {
         let email = this.state.user.email;
-        let address = FormManager.getValue("form", "address");
-        let phone = FormManager.getValue("form", "phone");
+        let address = FormManager.getValue("formUserProfile", "address");
+        let phone = FormManager.getValue("formUserProfile", "phone");
 
         return {
             email: email,
@@ -50,7 +50,7 @@ export default class UserProfileScreen extends Component {
         return (
             <View style={{flex: 1}}>
                 <Form
-                    formName="form"
+                    formName="formUserProfile"
                     defaults={{}}
                     openModal={(route) => {
                         Actions.formModalView({

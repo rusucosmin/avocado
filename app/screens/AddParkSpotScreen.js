@@ -26,13 +26,16 @@ class AddParkSpotScreen extends Component {
 
     }
 
+    componentDidMount() {
+        FormManager.reset("formAddParkSpot");
+    }
+
     componentDidUpdate() {
         this.updateLocationTitle();
     }
 
     componentWillReceiveProps() {
         console.log("Form props: ", this.props);
-        FormManager.reset('form');
     }
 
     updateLocationTitle() {
@@ -107,15 +110,15 @@ class AddParkSpotScreen extends Component {
     }
 
     prepareParkSpotForRequest() {
-        let name = FormManager.getValue("form", "name");
-        let address = FormManager.getValue("form", "address");
+        let name = FormManager.getValue("formAddParkSpot", "name");
+        let address = FormManager.getValue("formAddParkSpot", "address");
         let latitude = this.state.parkspot.latitude;
         let longitude = this.state.parkspot.longitude;
-        let price_per_hour = FormManager.getValue("form", "price");
-        let size = FormManager.getValue("form", "size");
+        let price_per_hour = FormManager.getValue("formAddParkSpot", "price");
+        let size = FormManager.getValue("formAddParkSpot", "size");
         const sizes = ["small", "medium", "large"];
         size = sizes[size - 1];
-        let description = FormManager.getValue("form", "description");
+        let description = FormManager.getValue("formAddParkSpot", "description");
 
         return {
             name, address, latitude, longitude, price_per_hour, size, description
@@ -128,7 +131,7 @@ class AddParkSpotScreen extends Component {
         return (
             <View style={{flex: 1}}>
                 <Form
-                    formName="form"
+                    formName="formAddParkSpot"
                     defaults={{}}
                     openModal={(route) => {
                         Actions.formModalView({

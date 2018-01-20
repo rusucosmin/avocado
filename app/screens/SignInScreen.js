@@ -4,21 +4,26 @@ import {Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, Async
 import {connect} from 'react-redux';
 import {signIn as signInAction} from '../actions/users';
 import * as Style from '../styles';
+import LoadingIndicator from "./LoadingIndicator";
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = {email: '', password: ''};
+        this.state = {
+            email: '',
+            password: '',
+            loading: true
+        };
     }
 
     componentDidMount() {
         this.isSignedIn();
     }
 
-    isSignedIn() {
+    async isSignedIn() {
         // TODO: save to store the credentials from async storage when you sign in
         let email, token;
-        AsyncStorage.getItem("email")
+        await AsyncStorage.getItem("email")
             .then((response) => {
                 email = response;
                 console.log("Local email: ", email);
@@ -35,13 +40,16 @@ class LoginScreen extends Component {
                         token: token,
                         fetching: false
                     };
-                    this.verifyUserRole(token)
+                    return this.verifyUserRole(token)
                 }
+            })
+            .then(() => {
+                this.setState({loading: false})
             })
     }
 
     verifyUserRole(token) {
-        fetch("https://damp-refuge-96622.herokuapp.com/user",{
+        return fetch("https://damp-refuge-96622.herokuapp.com/user", {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -49,18 +57,19 @@ class LoginScreen extends Component {
                 'Authorization': "Bearer " + token
             },
         }).then((response) => {
-            if(response.status == 200){
+            if (response.status == 200) {
                 return response.json();
             }
             return response;
         }).then((user) => {
             AsyncStorage.setItem("email", this.props.user.email);
             AsyncStorage.setItem("token", token);
-            if(user.role == 'admin')
+            if (user.role == 'admin')
                 Actions.reset("adminHome", {user: user});
             else
                 Actions.reset("homeView", {user: user});
 
+            return user;
         });
     }
 
@@ -83,70 +92,74 @@ class LoginScreen extends Component {
     }
 
     render() {
-        return (
-            <View style={styles.mainView}>
-                <StatusBar backgroundColor="#f4791c"/>
-                <View style={styles.titleBox}>
-                    <Image
-                        source={require('../img/parkparkgo_login_gradient.png')}
-                        style={[styles.imageContainer,styles.backgroundImage]}
-                    >
-                        <Text style={styles.title}>
-                            ParkParkGo
-                        </Text>
+        if (this.state.loading) {
+            return <LoadingIndicator/>
+        } else {
+            return (
+                <View style={styles.mainView}>
+                    <StatusBar backgroundColor="#f4791c"/>
+                    <View style={styles.titleBox}>
                         <Image
-                            source={require('../img/logo.png')}
-                            style={styles.logo}
+                            source={require('../img/parkparkgo_login_gradient.png')}
+                            style={[styles.imageContainer, styles.backgroundImage]}
+                        >
+                            <Text style={styles.title}>
+                                ParkParkGo
+                            </Text>
+                            <Image
+                                source={require('../img/logo.png')}
+                                style={styles.logo}
+                            />
+                            <Text style={styles.subtitle}>
+                                We find it, you park it
+                            </Text>
+                        </Image>
+
+                    </View>
+                    <View style={styles.loginBox}>
+                        <TextInput
+                            placeholder={"Email"}
+                            placeholderTextColor={'#b6b6b4'}
+                            defaultValue={this.state.email}
+                            onChangeText={(text) => {
+                                this.setState({email: text});
+                            }}
+                            keyboardType={'email-address'}
+                            style={styles.inputEmail}
                         />
-                        <Text style={styles.subtitle}>
-                            We find it, you park it
-                        </Text>
-                    </Image>
+                        <TextInput
+                            placeholder={"Password"}
+                            placeholderTextColor={'#b6b6b4'}
+                            defaultValue={this.state.password}
+                            onChangeText={(text) => {
+                                this.setState({password: text});
+                            }}
+                            secureTextEntry={true}
+                            style={styles.inputPassword}
+                        />
+                        <TouchableOpacity
+                            style={styles.buttonSignIn}
+                            onPress={() => {
+                                this.signIn()
+                            }}
+                        >
+                            <Text style={{color: '#fff', fontSize: 18}}>
+                                Sign in
+                            </Text>
+                        </TouchableOpacity>
+                        <Text style={{marginTop: 12, fontSize: 14, color: "#b6b6b4"}}>
+                            <Text> Don't have an account? </Text>
+                            <Text style={{fontWeight: 'bold'}}
+                                  onPress={() => {
+                                      this.goToSignUp();
+                                  }}
+                            > SIGN UP </Text>
 
-                </View>
-                <View style={styles.loginBox}>
-                    <TextInput
-                        placeholder={"Email"}
-                        placeholderTextColor={'#b6b6b4'}
-                        defaultValue={this.state.email}
-                        onChangeText={(text) => {
-                            this.setState({email: text});
-                        }}
-                        keyboardType={'email-address'}
-                        style={styles.inputEmail}
-                    />
-                    <TextInput
-                        placeholder={"Password"}
-                        placeholderTextColor={'#b6b6b4'}
-                        defaultValue={this.state.password}
-                        onChangeText={(text) => {
-                            this.setState({password: text});
-                        }}
-                        secureTextEntry={true}
-                        style={styles.inputPassword}
-                    />
-                    <TouchableOpacity
-                        style={styles.buttonSignIn}
-                        onPress={() => {
-                            this.signIn()
-                        }}
-                    >
-                        <Text style={{color: '#fff', fontSize: 18}}>
-                            Sign in
                         </Text>
-                    </TouchableOpacity>
-                    <Text style={{marginTop: 12, fontSize: 14, color: "#b6b6b4"}}>
-                        <Text> Don't have an account? </Text>
-                        <Text style={{fontWeight: 'bold'}}
-                              onPress={() => {
-                                  this.goToSignUp();
-                              }}
-                        > SIGN UP </Text>
-
-                    </Text>
+                    </View>
                 </View>
-            </View>
-        );
+            )
+        }
     }
 }
 
