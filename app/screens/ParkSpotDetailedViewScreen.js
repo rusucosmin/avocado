@@ -19,7 +19,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
     }
 
     componentDidMount() {
-        FormManager.reset("formParkSpotDetail");
+        FormManager.reset("formDe");
 
     }
 
@@ -101,18 +101,18 @@ export default class ParkSpotDetailedViewScreen extends Component {
     }
 
     prepareParkSpotForRequest() {
-        let name = FormManager.getValue("formParkSpotDetail", "name");
-        let address = FormManager.getValue("formParkSpotDetail", "address");
+        let name = FormManager.getValue("formDe", "name");
+        let address = FormManager.getValue("formDe", "address");
         let latitude = this.state.park_spot.latitude;
         let longitude = this.state.park_spot.longitude;
-        let price_per_hour = FormManager.getValue("formParkSpotDetail", "price");
-        let size = FormManager.getValue("formParkSpotDetail", "size");
+        let price_per_hour = FormManager.getValue("formDe", "price");
+        let size = FormManager.getValue("formDe", "size");
         const sizes = ["small", "medium", "large"];
         let sizeBefore = this.state.park_spot.size;
         size = sizes[size - 1];
         if (size == null)
             size = sizeBefore
-        let description = FormManager.getValue("formParkSpotDetail", "description");
+        let description = FormManager.getValue("formDe", "description");
 
         return {
             name, address, latitude, longitude, price_per_hour, size, description
@@ -124,7 +124,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
         return (
             <View style={{flex: 1}}>
                 <Form
-                    formName="formParkSpotDetail"
+                    formName="formDe"
                     defaults={{}}
                     openModal={(route) => {
                         Actions.formModalView({

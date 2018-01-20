@@ -18,6 +18,10 @@ class ParkSpotsView extends Component {
     }
 
     componentDidMount() {
+        this.fetchData();
+    }
+
+    fetchData() {
         AsyncStorage.getItem("token")
             .then((token) => {
                 this.setState({loading: true});
@@ -43,7 +47,6 @@ class ParkSpotsView extends Component {
                     })
                     .then((responseData) => {
                         console.log("List of park spots: ", responseData);
-                        // dispatch(fetchingParkSpotsSave(responseData))
                         this.setState({parkSpotDS: global.ds.cloneWithRows(responseData)})
                     })
                     .catch((error) => {
@@ -57,7 +60,7 @@ class ParkSpotsView extends Component {
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => Actions.parkSpotDetailedView({park_spot: record})}>
+                <TouchableOpacity onPress={() => Actions.parkSpotDetailedView({park_spot: record, refreshParkSpots: () => {this.fetchData()}})}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>
@@ -96,7 +99,7 @@ class ParkSpotsView extends Component {
 
                     <ActionButton buttonColor={Style.general.color5}
                                   onPress={() => {
-                                      Actions.addParkSpotView();
+                                      Actions.addParkSpotView({refreshParkSpots: () => {this.fetchData()}});
                                   }}/>
 
                 </View>
