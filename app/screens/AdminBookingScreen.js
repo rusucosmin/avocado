@@ -12,13 +12,13 @@ export default class BookingsListScreen extends Component {
 
 
         this.state = {
-            bookingsDS: global.dsBookings.cloneWithRows([])
+            bookingsDS: global.dsAdminBookings.cloneWithRows([])
         }
     }
 
     async loadData() {
         let token = await AsyncStorage.getItem("token");
-        return fetch("https://damp-refuge-96622.herokuapp.com/history", {
+        return fetch("https://damp-refuge-96622.herokuapp.com/admin/bookings", {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -33,16 +33,10 @@ export default class BookingsListScreen extends Component {
         }).then((data) => {
             if(data.length == 0){
                 Alert.alert("You have not made any bookings yet!");
-                this.setState({bookingsDS: global.dsBookings.cloneWithRows([])})
+                this.setState({bookingsDS: global.dsAdminBookings.cloneWithRows([])})
             }
             else {
-                future_bookigns = [];
-                DATETIME_THRESHOLD_NOW = Date.now();
-                for(let bookingKey in data) {
-                    if(this.getTimeFromData(data[bookingKey].start_datetime) > DATETIME_THRESHOLD_NOW)
-                        future_bookigns.push(data[bookingKey]);
-                }
-                this.setState({bookingsDS: global.dsBookings.cloneWithRows(future_bookigns)})
+                this.setState({bookingsDS: global.dsAdminBookings.cloneWithRows(data)})
             }
         }).catch((error) => {
             console.log("Find park spot error: ", error);
@@ -50,9 +44,32 @@ export default class BookingsListScreen extends Component {
         });
     }
 
-    getTimeFromData(stringDatetime) {
-        ROMANIAN_OFFSET = 2 * 60 * 60 * 1000;
-        return Date.parse(stringDatetime) - ROMANIAN_OFFSET;
+    async deleteBooking(bookingId) {
+        let token = await AsyncStorage.getItem("token");
+
+        return fetch("https://damp-refuge-96622.herokuapp.com/bookings/" + bookingId.toString(),{
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            }
+        }).then((response) => {
+            if(response.status == 204) {
+                Promise.all(this.loadData());
+                Alert.alert(
+                    "Result",
+                    "Booking was successfully deleted",
+                    [
+                    {text: "Ok", onPress: () => {this.loadData();}},
+                        {text: "Go back", onPress: () => {Actions.pop();}}
+                    ]
+                )
+            }
+            else{
+                Alert.alert("Result","Booking was not deleted!");
+            }
+        });
     }
 
     componentDidMount() {
@@ -62,7 +79,15 @@ export default class BookingsListScreen extends Component {
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => {Alert.alert(record.park_spot.address)}}>
+                <TouchableOpacity onPress={() => {
+                    Alert.alert("Confirmation",
+                        "Are you sure you want to delete this booking?",
+                        [
+                            {text: "Yes", onPress: () => {Promise.all(this.deleteBooking(record.id));}},
+                            {text: "No", onPress: () => {}}
+                        ],
+                        { cancelable: false });
+                }}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>

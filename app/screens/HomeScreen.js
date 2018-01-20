@@ -37,6 +37,26 @@ export default class HomeScreen extends Component {
         Actions.bookingsListScreen();
     }
 
+    async seeUserProfile() {
+        let token = await AsyncStorage.getItem("token");
+
+        return fetch("https://damp-refuge-96622.herokuapp.com/user",{
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            },
+        }).then((response) => {
+            if(response.status == 200){
+                return response.json();
+            }
+            return response;
+        }).then((user) => {
+            Actions.userProfile({user: user});
+        });
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -52,8 +72,31 @@ export default class HomeScreen extends Component {
                                 Actions.findParkSpotView();
                             }}
                         >
+
                             <Text style={styles.textFindParkingSpot}>
                                 Find a Parking Spot
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonFindParkingSpot}
+                            onPress={() => {
+                                Actions.bookingHistory();
+                            }}
+                        >
+
+                            <Text style={styles.textFindParkingSpot}>
+                                See booking history
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonFindParkingSpot}
+                            onPress={() => {
+                                this.seeUserProfile();
+                            }}
+                        >
+
+                            <Text style={styles.textFindParkingSpot}>
+                                Your profile
                             </Text>
                         </TouchableOpacity>
                     </Image>
@@ -73,7 +116,7 @@ export default class HomeScreen extends Component {
                     <View style={[styles.screenWidth]}>
                         <TouchableOpacity
                             onPress={() => {
-                                this.seePersonalBookings()
+                                Promise.all([this.seePersonalBookings()]);
                             }}
                         >
                             <Image

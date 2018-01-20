@@ -17,7 +17,16 @@ export default class FoundParkSpotsScreen extends Component {
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => this.doBookParkSpot(record)}>
+                <TouchableOpacity onPress={() => {
+                    Alert.alert("Confirmation",
+                        "Are you sure you want to book this park spot?",
+                        [
+                            {text: "Yes", onPress: () => {this.doBookParkSpot(record)}},
+                            {text: "No", onPress: () => {}}
+                        ],
+                        { cancelable: false }
+                    )
+                }}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>
@@ -57,11 +66,11 @@ export default class FoundParkSpotsScreen extends Component {
             }
             return response;
         }).then((user) => {
-            return this.bookParkSpot(parkspot,user.id,token);
+            return this.bookParkSpot(parkspot,user.id,user.email,token);
         });
     }
 
-    async bookParkSpot(parkspot,userId,token) {
+    async bookParkSpot(parkspot,userId,userEmail,token) {
 
         //TODO: integrate into redux flow
         console.log("Book for parkspot: ", parkspot);
@@ -98,9 +107,10 @@ export default class FoundParkSpotsScreen extends Component {
                 parkspot.price_per_hour,
                 parkspot.size
             );
-
+            Actions.homeView({user: {email: userEmail}})
 
         }).catch((error) => {
+            Actions.homeView({user: {email: userEmail}})
             console.log("Book park spot error: ", error);
             return error;
         })
