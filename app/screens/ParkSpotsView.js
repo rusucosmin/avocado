@@ -16,41 +16,14 @@ class ParkSpotsView extends Component {
     }
 
     componentDidMount() {
-        AsyncStorage.getItem("token")
-            .then((token) => {
-                return fetch("https://damp-refuge-96622.herokuapp.com/user/park_spots", {
-                    method: "GET",
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then((response) => {
-                        console.log("Sign in response: ", response);
-                        if (response.status == 200) {
-                            // dispatch(fetchingParkSpotsSuccess());
-                            console.log("Park spots fetched");
-                            return response.json();
-                        }
-                        else {
-                            dispatch(fetchingParkSpotsFail())
-                        }
-                    })
-                    .then((responseData) => {
-                        console.log("List of park spots: ", responseData);
-                        // dispatch(fetchingParkSpotsSave(responseData))
-                        this.setState({parkSpotDS: global.ds.cloneWithRows(responseData)})
-                    })
-                    .catch((error) => {
-                    })
-            });
+        this.fetchData()
     }
 
     renderRow(record) {
         return (
             <View>
-                <TouchableOpacity onPress={() => Actions.parkSpotDetailedView({park_spot: record})}>
+                <TouchableOpacity onPress={() =>
+                    Actions.parkSpotDetailedView({park_spot: record, refreshParkSpots: () => {this.fetchData()}})}>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
                             <View style={styles.halfView}>
@@ -84,10 +57,43 @@ class ParkSpotsView extends Component {
                 />
 
                 <ActionButton buttonColor={Style.general.color5}
-                              onPress={() => {Actions.addParkSpotView();}}/>
+                              onPress={() => {Actions.addParkSpotView({refreshParkSpots: () => {this.fetchData()}});
+                              }}/>
 
             </View>
         );
+    }
+
+    fetchData() {
+        AsyncStorage.getItem("token")
+            .then((token) => {
+                return fetch("https://damp-refuge-96622.herokuapp.com/user/park_spots", {
+                    method: "GET",
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        console.log("Sign in response: ", response);
+                        if (response.status == 200) {
+                            // dispatch(fetchingParkSpotsSuccess());
+                            console.log("Park spots fetched");
+                            return response.json();
+                        }
+                        else {
+                            dispatch(fetchingParkSpotsFail())
+                        }
+                    })
+                    .then((responseData) => {
+                        console.log("List of park spots: ", responseData);
+                        // dispatch(fetchingParkSpotsSave(responseData))
+                        this.setState({parkSpotDS: global.ds.cloneWithRows(responseData)})
+                    })
+                    .catch((error) => {
+                    })
+            });
     }
 }
 

@@ -9,7 +9,7 @@ export default class BookingHistoryListScreen extends Component {
         super(props);
 
         this.empty_history = {
-            name: "No booking found."
+            name: "No bookings found."
         }
 
         this.state = {

@@ -12,7 +12,7 @@ class AdminParkSpotsScreen extends Component {
         super(props);
 
         this.empty_parking = {
-            name: "No parking spot found."
+            name: "No parking spots found."
         }
 
         this.state = {

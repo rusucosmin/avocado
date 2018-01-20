@@ -9,7 +9,7 @@ export default class AdminAvailabilityScreen extends Component {
         super(props);
 
         this.empty_availability = {
-            name: "No availability found."
+            name: "No availabilities found."
         }
 
         this.state = {

@@ -6,48 +6,71 @@ import ActionButton from "react-native-action-button";
 export default class FoundParkSpotsScreen extends Component {
     constructor(props) {
         super(props);
+
+        this.empty_parking_spot = {
+            name: "No parking spots found."
+        }
+
         this.state = {}
     }
 
     componentDidUpdate() {
         console.log("Found: ", this, props);
-
     }
 
     renderRow(record) {
-        return (
-            <View>
-                <TouchableOpacity onPress={() => {
-                    Alert.alert("Confirmation",
-                        "Are you sure you want to book this park spot?",
-                        [
-                            {text: "Yes", onPress: () => {this.doBookParkSpot(record)}},
-                            {text: "No", onPress: () => {}}
-                        ],
-                        { cancelable: false }
-                    )
-                }}>
+        if (record == this.empty_parking_spot) {
+            return (
+                <View>
                     <View style={styles.listElement}>
                         <View style={styles.mainListView}>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotName}>{record.name}</Text>
-                            </View>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{record.address}</Text>
-                            </View>
-                        </View>
-                        <View style={styles.secondaryListView}>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkSpotPrice}>{record.price_per_hour} / hr</Text>
-                            </View>
-                            <View style={styles.halfView}>
-                                <Text style={styles.parkspotSize}>{record.size}</Text>
-                            </View>
+                            <Text style={styles.parkspotName}>{record.name}</Text>
                         </View>
                     </View>
-                </TouchableOpacity>
-            </View>
-        );
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert("Confirmation",
+                            "Are you sure you want to book this park spot?",
+                            [
+                                {
+                                    text: "Yes", onPress: () => {
+                                    this.doBookParkSpot(record)
+                                }
+                                },
+                                {
+                                    text: "No", onPress: () => {
+                                }
+                                }
+                            ],
+                            {cancelable: false}
+                        )
+                    }}>
+                        <View style={styles.listElement}>
+                            <View style={styles.mainListView}>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotName}>{record.name}</Text>
+                                </View>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotAddress}>{record.address}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.secondaryListView}>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkSpotPrice}>{record.price_per_hour} / hr</Text>
+                                </View>
+                                <View style={styles.halfView}>
+                                    <Text style={styles.parkspotSize}>{record.size}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
     }
 
     async doBookParkSpot(parkspot) {
@@ -148,6 +171,9 @@ export default class FoundParkSpotsScreen extends Component {
 
     render() {
         let parkspots = global.ds_found_park_spots.cloneWithRows(this.props.parkspots);
+        if (this.props.parkspots.length == 0) {
+            parkspots = global.ds_found_park_spots.cloneWithRows([this.empty_parking_spot])
+        }
         return (
             <View>
                 <ListView

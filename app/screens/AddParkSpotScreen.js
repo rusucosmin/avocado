@@ -205,7 +205,8 @@ class AddParkSpotScreen extends Component {
                                     try {
                                         if(response.status === 200) {
                                             // If add successful => close view
-                                            Actions.pop();
+                                            this.props.refreshParkSpots()
+                                            Actions.pop()
                                         }
                                     } catch (error) {}
                                 });

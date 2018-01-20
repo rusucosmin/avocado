@@ -12,7 +12,7 @@ export default class BookingsListScreen extends Component {
         super(props);
 
         this.empty_booking = {
-            name: "No booking found."
+            name: "No bookings found."
         }
 
         this.state = {
