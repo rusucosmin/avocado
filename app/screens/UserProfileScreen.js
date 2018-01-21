@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {StyleSheet, AsyncStorage, Alert, TouchableOpacity, Text, View} from 'react-native'
+import {AsyncStorage, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
 import * as Style from '../styles';
@@ -44,6 +44,8 @@ export default class UserProfileScreen extends Component {
                 user: this.prepareUserData()
             })
         });
+
+        // TODO save locally
     }
 
     render() {
@@ -104,6 +106,7 @@ export default class UserProfileScreen extends Component {
                                     try {
                                         if (response.status === 200) {
                                             // If add successful => close view
+                                            this.props.refreshUser()
                                             Actions.pop();
                                         }
                                     } catch (error) {

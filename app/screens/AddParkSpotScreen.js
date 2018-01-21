@@ -26,11 +26,6 @@ class AddParkSpotScreen extends Component {
 
     }
 
-
-    componentDidMount() {
-
-    }
-
     componentDidUpdate() {
         this.updateLocationTitle();
     }
@@ -132,9 +127,8 @@ class AddParkSpotScreen extends Component {
         let latitude = this.state.parkspot.latitude;
         let longitude = this.state.parkspot.longitude;
         let price_per_hour = FormManager.getValue("formAddParkSpot", "price");
-        let size = FormManager.getValue("formAddParkSpot", "size");
-        const sizes = ["small", "medium", "large"];
-        size = sizes[size - 1];
+        let size = FormManager.getValue("formAddParkSpot", "size")[0];
+        console.log("SIZE GOTTEN", size)
         let description = FormManager.getValue("formAddParkSpot", "description");
 
         return {
@@ -199,9 +193,9 @@ class AddParkSpotScreen extends Component {
                         <Form.SeparatorWidget/>
 
                         <Form.SelectWidget name='size' title='Size' multiple={false}>
-                            <Form.OptionWidget title='1' value='1'/>
-                            <Form.OptionWidget title='2' value='2'/>
-                            <Form.OptionWidget title='3' value='3'/>
+                            <Form.OptionWidget title='small' value='small'/>
+                            <Form.OptionWidget title='medium' value='medium'/>
+                            <Form.OptionWidget title='large' value='large'/>
                         </Form.SelectWidget>
                     </Form.ModalWidget>
 

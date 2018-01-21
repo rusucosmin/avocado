@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'redux';
-import {View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage, Image, StatusBar} from 'react-native'
+import {AsyncStorage, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import * as Style from '../styles';
 import LoadingIndicator from "./LoadingIndicator";
 import RippleLoader from "react-native-indicator/lib/loader/RippleLoader";

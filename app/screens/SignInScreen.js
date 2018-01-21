@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage, StatusBar} from 'react-native';
+import {Alert, AsyncStorage, Image, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {connect} from 'react-redux';
 import {signIn as signInAction} from '../actions/users';
 import * as Style from '../styles';
@@ -87,7 +87,8 @@ class LoginScreen extends Component {
                     // Get user data
                     this.verifyUserRole(token);
                 } else {
-                    this.setState({loading: false});
+                    this.setState({loading_normal_sign_in:false});
+
                     Alert.alert("Ooops", "No user with this data.");
                 }
             })

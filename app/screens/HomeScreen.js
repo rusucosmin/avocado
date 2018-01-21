@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'redux';
-import {View, Button, FlatList, Text, StyleSheet, TouchableOpacity, AsyncStorage, Image, StatusBar} from 'react-native'
+import {AsyncStorage, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import * as Style from '../styles';
 import RippleLoader from "react-native-indicator/lib/loader/RippleLoader";
 
@@ -12,6 +12,7 @@ export default class HomeScreen extends Component {
 
         this.state = {
             username: this.extractUserFromEmail(this.props.user.email),
+            userProfileUpdate: "",
             loading: false
         }
     }
@@ -40,7 +41,35 @@ export default class HomeScreen extends Component {
     }
 
     async seeUserProfile() {
-        Actions.userProfile({user: this.props.user})
+        let token = await AsyncStorage.getItem("token");
+        if (this.state.userProfileUpdate == "") {
+            Actions.userProfile({user: this.props.user, refreshUser: () => {this.fetchUser(token)}})
+        } else {
+            Actions.userProfile({
+                user: this.state.userProfileUpdate, refreshUser: () => {
+                    this.fetchUser(token)
+                }
+            })
+        }
+
+    }
+
+    fetchUser(token) {
+        fetch("https://damp-refuge-96622.herokuapp.com/user",{
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            },
+        }).then((response) => {
+            if(response.status == 200){
+                return response.json();
+            }
+            return response;
+        }).then((user) => {
+            this.setState({userProfileUpdate: user})
+        });
     }
 
     render() {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {StyleSheet, AsyncStorage, Alert, TouchableOpacity, Text, View} from 'react-native'
+import {AsyncStorage, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {connect} from 'react-redux';
 import {GiftedForm as Form, GiftedFormManager as FormManager} from 'react-native-gifted-form';
 import * as Style from '../styles';
@@ -19,6 +19,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
     }
 
     componentDidMount() {
+        console.log("Details for: ", this.props.park_spot);
     }
 
     componentDidUpdate() {
@@ -103,11 +104,12 @@ export default class ParkSpotDetailedViewScreen extends Component {
         let longitude = this.state.park_spot.longitude;
         let price_per_hour = FormManager.getValue("formParkSpotDetail", "price");
         let size = FormManager.getValue("formParkSpotDetail", "size");
-        const sizes = ["small", "medium", "large"];
         let sizeBefore = this.state.park_spot.size;
-        size = sizes[size - 1];
         if (size == null)
-            size = sizeBefore
+            size = sizeBefore;
+        else {
+            size = size[0]
+        }
         let description = FormManager.getValue("formParkSpotDetail", "description");
 
         return {
@@ -164,13 +166,14 @@ export default class ParkSpotDetailedViewScreen extends Component {
                     <Form.ModalWidget
                         title='Size'
                         displayValue='size'
+                        value={this.state.park_spot.size}
                     >
                         <Form.SeparatorWidget/>
 
                         <Form.SelectWidget name='size' title='Size' multiple={false}>
-                            <Form.OptionWidget title='1' value='1'/>
-                            <Form.OptionWidget title='2' value='2'/>
-                            <Form.OptionWidget title='3' value='3'/>
+                            <Form.OptionWidget title='small' value='small'/>
+                            <Form.OptionWidget title='medium' value='medium'/>
+                            <Form.OptionWidget title='large' value='large'/>
                         </Form.SelectWidget>
                     </Form.ModalWidget>
 
@@ -205,6 +208,7 @@ export default class ParkSpotDetailedViewScreen extends Component {
                                         if (response.status === 200) {
                                             // If add successful => close view
                                             this.props.refreshParkSpots();
+                                            FormManager.reset("formParkSpotDetail");
                                         }
                                     } catch (error) {
                                     }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {ListView, Text, View, TouchableOpacity, StyleSheet, Image, TextInput, Alert, AsyncStorage} from 'react-native';
+import {Alert, AsyncStorage, ListView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {connect} from 'react-redux';
 import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";

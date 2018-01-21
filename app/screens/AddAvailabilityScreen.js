@@ -1,20 +1,10 @@
 import React, {Component} from 'react';
-import {
-    Text,
-    View,
-    StyleSheet,
-    TouchableOpacity,
-    Image,
-    ScrollView,
-    Alert,
-    AsyncStorage,
-    TextInput, TouchableWithoutFeedback
-} from "react-native";
-import {Actions} from 'react-native-router-flux';
+import {Alert, AsyncStorage, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import * as Style from '../styles';
 import {RadioButtons} from "react-native-radio-buttons";
+import {Actions} from 'react-native-router-flux';
 
 export default class AddAvailabilityScreen extends Component {
 
