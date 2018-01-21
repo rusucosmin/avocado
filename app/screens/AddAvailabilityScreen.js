@@ -192,6 +192,8 @@ export default class AddAvailabilityScreen extends Component {
         let end_datetime = this.state.endDatetime.toString();
         let repeat = this.state.repeat.value;
         let until_datetime = this.state.untilDatetime.toString();
+        console.log("NEW AVAILABILITY start: ", this.state.startDatetime.toString());
+        console.log("NEW AVAILABILITY end: ", this.state.endDatetime.toString());
         return {
             park_spot_id, start_datetime, end_datetime, repeat, until: until_datetime
         }

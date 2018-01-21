@@ -59,12 +59,11 @@ export default class BookingHistoryListScreen extends Component {
     }
 
     getTimeFromData(stringDatetime) {
-        ROMANIAN_OFFSET = 2 * 60 * 60 * 1000;
-        return Date.parse(stringDatetime) - ROMANIAN_OFFSET;
+        return moment(moment.utc(stringDatetime)).valueOf();
     }
 
-    parseDatetime(datetime) {
-        return moment(datetime).format("YYYY-MM-DD HH:mm");
+    parseHumanDatetime(datetime) {
+        return moment.utc(datetime).format("YYYY-MM-DD HH:mm");
     }
 
     componentDidMount() {
@@ -91,10 +90,10 @@ export default class BookingHistoryListScreen extends Component {
                                 <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                             </View>
                             <View style={styles.halfView}>
-                                <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)}
+                                <Text style={styles.parkspotAddress}>{this.parseHumanDatetime(record.start_datetime)}
                                     to </Text>
                                 <Text
-                                    style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
+                                    style={styles.parkspotAddress}>{this.parseHumanDatetime(record.end_datetime)} </Text>
                                 <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
                                 <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
                             </View>

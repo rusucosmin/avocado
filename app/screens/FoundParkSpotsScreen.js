@@ -98,6 +98,7 @@ export default class FoundParkSpotsScreen extends Component {
         //TODO: integrate into redux flow
         console.log("Book for parkspot: ", parkspot);
         console.log("Book for props: ", this.props);
+        console.log("Book for state: ", this.state);
         return fetch("https://damp-refuge-96622.herokuapp.com/bookings", {
             method: "POST",
             headers: {
@@ -121,19 +122,10 @@ export default class FoundParkSpotsScreen extends Component {
             return response;
         }).then((data) => {
             console.log("Booked data: ", data);
-            this.saveBookingToLocal(
-                this.props.startDatetime,
-                this.props.endDatetime,
-                parkspot.id,
-                parkspot.address,
-                parkspot.name,
-                parkspot.price_per_hour,
-                parkspot.size
-            );
             Actions.homeView({user: {email: userEmail}})
 
         }).catch((error) => {
-            Actions.homeView({user: {email: userEmail}})
+            Actions.homeView({user: {email: userEmail}});
             console.log("Book park spot error: ", error);
             return error;
         })
@@ -149,7 +141,6 @@ export default class FoundParkSpotsScreen extends Component {
             price_per_hour: price_per_hour,
             size: size
         };
-        let bookings = await AsyncStorage.getItem("bookings");
         if(bookings !== null) {
             console.log("Local bookings: ", bookings);
             bookings = JSON.parse(bookings);

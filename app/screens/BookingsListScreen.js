@@ -38,13 +38,17 @@ export default class BookingsListScreen extends Component {
             }
             return response;
         }).then((data) => {
+            console.log("Bookings: ", data);
             if (data.length == 0) {
                 this.setState({bookingsDS: global.dsBookings.cloneWithRows([this.empty_booking])})
             }
             else {
-                future_bookigns = [];
-                DATETIME_THRESHOLD_NOW = Date.now();
+                let future_bookigns = [];
+                let DATETIME_THRESHOLD_NOW = Date.now();
                 for (let bookingKey in data) {
+                    // console.log("Server: ", data[bookingKey].park_spot.name, " - ", moment(data[bookingKey].end_datetime).format("YYYY-MM-DD HH:mm"));
+                    // console.log("Moment UTC: ", moment.utc(data[bookingKey].end_datetime).format("YYYY-MM-DD HH:mm"));
+
                     if (this.getTimeFromData(data[bookingKey].end_datetime) > DATETIME_THRESHOLD_NOW)
                         future_bookigns.push(data[bookingKey]);
                 }
@@ -63,12 +67,11 @@ export default class BookingsListScreen extends Component {
     }
 
     getTimeFromData(stringDatetime) {
-        ROMANIAN_OFFSET = 2 * 60 * 60 * 1000;
-        return Date.parse(stringDatetime) - ROMANIAN_OFFSET;
+        return moment(moment.utc(stringDatetime)).valueOf();
     }
 
-    parseDatetime(datetime) {
-        return moment(datetime).format("YYYY-MM-DD HH:mm");
+    parseHumanDatetime(datetime) {
+        return moment.utc(datetime).format("YYYY-MM-DD HH:mm");
     }
 
     componentDidMount() {
@@ -148,9 +151,10 @@ export default class BookingsListScreen extends Component {
                                     <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                                 </View>
                                 <View style={styles.halfView}>
-                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
                                     <Text
-                                        style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
+                                        style={styles.parkspotAddress}>{this.parseHumanDatetime(record.start_datetime)} to </Text>
+                                    <Text
+                                        style={styles.parkspotAddress}>{this.parseHumanDatetime(record.end_datetime)} </Text>
                                     <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
                                     <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
                                 </View>

@@ -55,9 +55,9 @@ export default class AdminAvailabilityScreen extends Component {
     }
 
 
-    parseDatetime(datetime) {
-        return moment(datetime).format("YYYY-MM-DD HH:mm");
-    }
+    parseHumanDatetime(datetime) {
+        return moment.utc(datetime).format("YYYY-MM-DD HH:mm");
+    };
 
     async deleteAvailability(availabilityId) {
         let token = await AsyncStorage.getItem("token");
@@ -123,9 +123,9 @@ export default class AdminAvailabilityScreen extends Component {
                                     <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                                 </View>
                                 <View style={styles.halfView}>
-                                    <Text style={styles.parkspotAddress}>{this.parseDatetime(record.start_datetime)} to </Text>
+                                    <Text style={styles.parkspotAddress}>{this.parseHumanDatetime(record.start_datetime)} to </Text>
                                     <Text
-                                        style={styles.parkspotAddress}>{this.parseDatetime(record.end_datetime)} </Text>
+                                        style={styles.parkspotAddress}>{this.parseHumanDatetime(record.end_datetime)} </Text>
                                     <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
                                 </View>
                             </View>

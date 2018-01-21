@@ -6,6 +6,7 @@ import {fetchParkSpots as fetchParkSpotsAction} from '../actions/parkSpots'
 import {parkSpots} from "../reducers/parkSpots";
 import ActionButton from 'react-native-action-button'
 import LoadingIndicator from "./LoadingIndicator";
+import moment from "moment/moment";
 
 export default class BookingsListScreen extends Component {
     constructor(props) {
@@ -87,6 +88,10 @@ export default class BookingsListScreen extends Component {
         });
     }
 
+    parseHumanDatetime(datetime) {
+        return moment.utc(datetime).format("YYYY-MM-DD HH:mm");
+    }
+
     componentDidMount() {
         Promise.all([this.loadData()]);
     }
@@ -127,8 +132,8 @@ export default class BookingsListScreen extends Component {
                                     <Text style={styles.parkspotName}>{record.park_spot.name}</Text>
                                 </View>
                                 <View style={styles.halfView}>
-                                    <Text style={styles.parkspotAddress}>{record.start_datetime} to </Text>
-                                    <Text style={styles.parkspotAddress}>{record.end_datetime} </Text>
+                                    <Text style={styles.parkspotAddress}>{this.parseHumanDatetime(record.start_datetime)} to </Text>
+                                    <Text style={styles.parkspotAddress}>{this.parseHumanDatetime(record.end_datetime)} </Text>
                                     <Text style={styles.parkspotAddress}>{record.park_spot.address}</Text>
                                     <Text style={styles.parkspotAddress}>{record.user.phone}</Text>
                                 </View>
